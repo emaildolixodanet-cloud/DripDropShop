@@ -1,0 +1,13 @@
+# ==============================
+# DRIPDROP · PRODUCT INFO
+# ==============================
+# Preenche apenas os valores à direita do "="
+# Não uses aspas
+# Não uses símbolo €
+# Não apagues chaves
+
+name=Hoodie Ralph Lauren
+type=Hoodie
+price=35
+description=Artigo novo com etiqueta.
+available=true
