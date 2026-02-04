@@ -1,7 +1,11 @@
-
 // =======================
 // GOOGLE SHEETS INTEGRATION
 // =======================
+
+// ---------- BASE PATH ----------
+const IS_ADMIN = window.location.pathname.startsWith("/admin");
+const BASE_PATH = IS_ADMIN ? "../" : "";
+
 async function fetchSheetJSON(url) {
   const res = await fetch(url);
   const text = await res.text();
@@ -37,10 +41,6 @@ async function loadSheetData() {
 
   return { productOverrides, sizesByProduct };
 }
-
-/* =====================================================
-   CATÁLOGO DRIPDROPSHOP + CUPÕES (CORRIGIDO)
-===================================================== */
 
 /* ---------- UTIL ---------- */
 
@@ -88,7 +88,6 @@ function createProductCard(product) {
 
   const priceNumber = priceToNumber(safePriceText);
 
-  // Usar config do WhatsApp
   const whatsappBase = window.APP_CONFIG?.whatsapp?.baseUrl || 'https://wa.me/351XXXXXXXXX';
   const waText = encodeURIComponent(
     product.whatsappText ||
@@ -104,7 +103,7 @@ function createProductCard(product) {
           <div class="color-thumb ${i === 0 ? "active" : ""}"
                data-images='${JSON.stringify(c.images)}'
                data-color="${c.name}">
-            <img src="${c.images[0]}" alt="${c.name}">
+            <img src="${BASE_PATH + c.images[0]}" alt="${c.name}">
           </div>
         `).join("")}
       </div>
@@ -114,7 +113,7 @@ function createProductCard(product) {
   article.innerHTML = `
     <div class="product-image-wrapper">
       <img
-        src="${images[0] || ""}"
+        src="${images[0] ? BASE_PATH + images[0] : ""}"
         class="product-image"
         alt="${safeName}"
         data-index="0"
@@ -122,8 +121,8 @@ function createProductCard(product) {
       />
 
       ${images.length > 1 ? `
-        <button class="img-nav prev" type="button" aria-label="Imagem anterior">‹</button>
-        <button class="img-nav next" type="button" aria-label="Imagem seguinte">›</button>
+        <button class="img-nav prev" type="button">‹</button>
+        <button class="img-nav next" type="button">›</button>
       ` : ""}
 
       ${stockBadge}
@@ -133,19 +132,18 @@ function createProductCard(product) {
       <h3 class="product-title" data-base-title="${safeName}">
         ${safeName}
       </h3>
-      
+
       <div class="product-info-top">
         <p class="product-description">${safeDesc}</p>
         ${colorThumbsHTML}
-        <button class="sizes-toggle" type="button" aria-label="Ver tamanhos">Tamanhos ▾</button>
+        <button class="sizes-toggle" type="button">Tamanhos ▾</button>
         <div class="sizes-panel" hidden></div>
       </div>
-      
+
       <div class="product-footer">
         <div class="price-container">
           <span class="price-label">PREÇO</span>
-          <span class="price"
-                data-price="${priceNumber}">
+          <span class="price" data-price="${priceNumber}">
             ${safePriceText}
           </span>
         </div>
@@ -158,13 +156,13 @@ function createProductCard(product) {
           target="_blank"
           rel="noopener"
         >
-          <img src="assets/icons/whatsapp.png" class="wa-icon-small" alt="">
+          <img src="${BASE_PATH}assets/icons/whatsapp.png" class="wa-icon-small" alt="">
           WhatsApp
         </a>
       </div>
 
       <div class="vinted-footer-tag">
-        <img src="assets/icons/Vinted_Logo_2022.png" class="vinted-logo-small" alt="Vinted">
+        <img src="${BASE_PATH}assets/icons/Vinted_Logo_2022.png" class="vinted-logo-small" alt="Vinted">
         <span class="vinted-text">· Envios em 24h</span>
       </div>
     </div>
@@ -177,100 +175,21 @@ function createProductCard(product) {
 
 function renderCatalog() {
   const grid = document.getElementById("products-grid");
-  const loading = document.getElementById("products-loading");
-  
   if (!grid || !Array.isArray(window.products)) return;
 
-  // Show loading
-  if (loading) loading.style.display = 'block';
-
-  // Clear grid
   grid.innerHTML = "";
-
-  // Render products
   window.products.forEach(p => grid.appendChild(createProductCard(p)));
-
-  // Hide loading
-  if (loading) loading.style.display = 'none';
 }
 
-/* ---------- CUPÕES ---------- */
-
-function initCouponInput() {
-  const input = document.getElementById("couponInput");
-  if (!input) return;
-
-  input.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      const code = input.value.toUpperCase().trim();
-      const coupons = window.APP_CONFIG?.coupons || {};
-      
-      if (coupons[code]) {
-        localStorage.setItem("activeCoupon", code);
-        applyCoupon(code);
-      } else {
-        input.classList.add("error");
-        setTimeout(() => input.classList.remove("error"), 400);
-      }
-    }
-  });
-}
-
-function applyCoupon(code) {
-  const coupons = window.APP_CONFIG?.coupons || {};
-  const discount = coupons[code];
-  
-  if (!discount) return;
-
-  // Update all prices
-  document.querySelectorAll(".price").forEach(el => {
-    const original = parseFloat(el.dataset.price);
-    const discounted = (original * (1 - discount)).toFixed(2);
-
-    el.innerHTML = `
-      <span class="old-price">${original.toFixed(2)} €</span>
-      <span class="new-price">${discounted} €</span>
-    `;
-  });
-
-  // Add animation once (fix do bug)
-  document.querySelectorAll(".price").forEach(el => {
-    el.classList.add("coupon-applied");
-  });
-  
-  setTimeout(() => {
-    document.querySelectorAll(".price").forEach(el => {
-      el.classList.remove("coupon-applied");
-    });
-  }, 500);
-
-  // Update WhatsApp links
-  const whatsappBase = window.APP_CONFIG?.whatsapp?.baseUrl || 'https://wa.me/351XXXXXXXXX';
-  
-  document.querySelectorAll(".btn-wa-card").forEach(btn => {
-    const originalText = btn.dataset.waText;
-    btn.href = `${whatsappBase}?text=${encodeURIComponent(
-      originalText + "\n\nCupão aplicado: " + code
-    )}`;
-  });
-
-  // Disable input and update label
-  input.disabled = true;
-  const label = document.querySelector(".brutalist-label");
-  if (label) label.textContent = "CÓDIGO ATIVO";
-}
-
-/* ---------- EVENTOS ---------- */
+/* ---------- INIT ---------- */
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const { productOverrides, sizesByProduct } = await loadSheetData();
+  const { productOverrides } = await loadSheetData();
 
-  // aplica overrides vindos do Sheets
   window.products = window.products
     .map(p => {
       const override = productOverrides[p.id];
       if (!override) return p;
-
       return {
         ...p,
         price: override.price ?? p.price,
@@ -280,13 +199,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .filter(p => p.available !== false);
 
   renderCatalog();
-  initCouponInput();
-
-  const saved = localStorage.getItem("activeCoupon");
-  const coupons = window.APP_CONFIG?.coupons || {};
-  if (saved && coupons[saved]) applyCoupon(saved);
 });
-
 
 /* ---------- NAVEGAÇÃO DE IMAGENS ---------- */
 
@@ -296,21 +209,14 @@ document.addEventListener("click", (e) => {
 
   const wrapper = btn.closest(".product-image-wrapper");
   const img = wrapper.querySelector(".product-image");
-  
-  let images;
-  try {
-    images = JSON.parse(img.dataset.images || "[]");
-  } catch (err) {
-    console.error("Error parsing images:", err);
-    return;
-  }
+  const images = JSON.parse(img.dataset.images || "[]");
 
   let index = parseInt(img.dataset.index || "0", 10);
   index = btn.classList.contains("next")
     ? (index + 1) % images.length
     : (index - 1 + images.length) % images.length;
 
-  img.src = images[index];
+  img.src = BASE_PATH + images[index];
   img.dataset.index = index;
 });
 
@@ -322,63 +228,16 @@ document.addEventListener("click", (e) => {
 
   const wrapper = thumb.closest(".product-card");
   const img = wrapper.querySelector(".product-image");
-  
-  let images;
-  try {
-    images = JSON.parse(thumb.dataset.images || "[]");
-  } catch (err) {
-    console.error("Error parsing color images:", err);
-    return;
-  }
+  const images = JSON.parse(thumb.dataset.images || "[]");
 
-  if (!images.length) return;
-
-  // Atualiza imagem
-  img.src = images[0];
+  img.src = BASE_PATH + images[0];
   img.dataset.images = JSON.stringify(images);
   img.dataset.index = "0";
 
-  // Estado ativo
   wrapper.querySelectorAll(".color-thumb")
     .forEach(t => t.classList.remove("active"));
   thumb.classList.add("active");
 
-  // Título dinâmico
   const title = wrapper.querySelector(".product-title");
-  const baseTitle = title.dataset.baseTitle;
-  title.textContent = `${baseTitle} — ${thumb.dataset.color}`;
-
-  // Tamanhos por cor
-  const sizesPanel = wrapper.querySelector(".sizes-panel");
-  const sizesToggle = wrapper.querySelector(".sizes-toggle");
-
-  sizesPanel.hidden = true;
-  sizesToggle.textContent = "Tamanhos ▾";
-
-  const productId = wrapper.dataset.productId;
-  const product = window.products.find(p => p.id === productId);
-  
-  if (!product || !product.colors) return;
-  
-  const colorData = product.colors.find(c => c.name === thumb.dataset.color);
-
-  sizesPanel.innerHTML = colorData?.sizes?.length
-    ? colorData.sizes.map(s =>
-        `<button class="size-btn" data-sku="${s.sku}">${s.size}</button>`
-      ).join("")
-    : `<div class="no-stock">Sem stock nesta cor</div>`;
-});
-
-/* ---------- TOGGLE DE TAMANHOS ---------- */
-
-document.addEventListener("click", (e) => {
-  const toggle = e.target.closest(".sizes-toggle");
-  if (!toggle) return;
-
-  const wrapper = toggle.closest(".product-card");
-  const panel = wrapper.querySelector(".sizes-panel");
-
-  const isHidden = panel.hidden;
-  panel.hidden = !isHidden;
-  toggle.textContent = isHidden ? "Tamanhos ▴" : "Tamanhos ▾";
+  title.textContent = `${title.dataset.baseTitle} — ${thumb.dataset.color}`;
 });
