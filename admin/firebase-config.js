@@ -1,6 +1,6 @@
 // firebase-config.js
 export const firebaseConfig = {
-  apiKey: "AIzaSyC2l...",
+  apiKey: "AIzaSyC2luI4ptngogaIuK3qQ3wy5rgzYep2a60",
   authDomain: "dripdropshop.firebaseapp.com",
   projectId: "dripdropshop",
   storageBucket: "dripdropshop.appspot.com",
