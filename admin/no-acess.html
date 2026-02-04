@@ -1,16 +1,398 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Acesso bloqueado</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Acesso Bloqueado · DRIPDROPSHOP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+      z-index: 0;
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(220, 38, 38, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Glitch Lines */
+    .glitch-lines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.1;
+    }
+
+    .glitch-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #dc2626, transparent);
+      animation: glitchMove 4s linear infinite;
+    }
+
+    @keyframes glitchMove {
+      0% {
+        top: 0;
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        top: 100%;
+        opacity: 0;
+      }
+    }
+
+    /* Main Container */
+    .denied-container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 40px;
+      max-width: 550px;
+      width: 90%;
+    }
+
+    /* Logo Denied Effect */
+    .logo-wrapper {
+      margin-bottom: 40px;
+      position: relative;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-denied {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      animation: logoShake 0.5s ease-in-out;
+    }
+
+    @keyframes logoShake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .logo-denied img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: grayscale(1) brightness(0.7);
+      opacity: 0.8;
+    }
+
+    /* X Mark Overlay */
+    .x-mark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .x-mark::before,
+    .x-mark::after {
+      content: '';
+      position: absolute;
+      width: 120%;
+      height: 6px;
+      background: linear-gradient(90deg, transparent, #dc2626, transparent);
+      border-radius: 3px;
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.8);
+      animation: drawX 0.8s ease-out forwards;
+    }
+
+    .x-mark::before {
+      transform: rotate(45deg);
+    }
+
+    .x-mark::after {
+      transform: rotate(-45deg);
+      animation-delay: 0.2s;
+    }
+
+    @keyframes drawX {
+      0% {
+        width: 0;
+        opacity: 0;
+      }
+      100% {
+        width: 120%;
+        opacity: 1;
+      }
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 50px 40px;
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      box-shadow: 
+        0 8px 32px rgba(220, 38, 38, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Alert Icon */
+    .alert-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 30px;
+      position: relative;
+      animation: alertPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes alertPulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
+    .alert-icon svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.5));
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #dc2626 0%, #ff6b6b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp 0.6s ease-out 0.3s both;
+    }
+
+    .message {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 15px;
+      line-height: 1.6;
+      animation: fadeInUp 0.6s ease-out 0.5s both;
+    }
+
+    .sub-message {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 40px;
+      animation: fadeInUp 0.6s ease-out 0.7s both;
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Back Button */
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 16px 45px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      animation: fadeInUp 0.6s ease-out 0.9s both;
+    }
+
+    .back-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .back-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .back-btn:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    }
+
+    .back-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Error Code */
+    .error-code {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 0.7rem;
+      color: rgba(220, 38, 38, 0.5);
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 1px;
+      z-index: 10;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .message {
+        font-size: 1rem;
+      }
+
+      .glass-card {
+        padding: 40px 30px;
+      }
+
+      .logo-denied {
+        width: 130px;
+        height: 130px;
+      }
+
+      .back-btn {
+        padding: 14px 35px;
+        font-size: 0.85rem;
+      }
+
+      .error-code {
+        font-size: 0.65rem;
+      }
+    }
+  </style>
 </head>
-<body style="text-align:center; padding:40px; font-family:sans-serif">
+<body>
+  
+  <!-- Background Animation -->
+  <div class="bg-animation"></div>
 
-  <h2>Acesso bloqueado</h2>
-  <p>Este email não está autorizado a aceder ao painel.</p>
+  <!-- Glitch Lines -->
+  <div class="glitch-lines">
+    <div class="glitch-line" style="animation-delay: 0s;"></div>
+    <div class="glitch-line" style="animation-delay: 1.5s;"></div>
+    <div class="glitch-line" style="animation-delay: 3s;"></div>
+  </div>
 
-  <a href="./login.html">Voltar ao login</a>
+  <!-- Main Content -->
+  <div class="denied-container">
+    
+    <!-- Logo with X -->
+    <div class="logo-wrapper">
+      <div class="logo-denied">
+        <img src="./assets/logo.png" alt="DripDropShop">
+        <div class="x-mark"></div>
+      </div>
+    </div>
+
+    <!-- Glass Card -->
+    <div class="glass-card">
+      <div class="error-code">ERR_403_FORBIDDEN</div>
+
+      <!-- Alert Icon -->
+      <div class="alert-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9V13M12 17H12.01M5.07183 19H18.9282C20.4678 19 21.4301 17.3333 20.6603 16L13.7321 4C12.9623 2.66667 11.0377 2.66667 10.2679 4L3.33975 16C2.56995 17.3333 3.53223 19 5.07183 19Z" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <h1>Acesso Bloqueado</h1>
+      <p class="message">Não está autorizado a aceder ao painel.</p>
+      <p class="sub-message">Se achas que isto é um erro, contacta o administrador.</p>
+
+      <a href="./login.html" class="back-btn">
+        <span>← Voltar ao Login</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    DRIPDROPSHOP © 2026 · ACESSO RESTRITO
+  </div>
 
 </body>
 </html>
