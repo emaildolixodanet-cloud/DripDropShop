@@ -1,0 +1,418 @@
+<script type="module">
+  import { protectPage } from "./auth.js";
+  await protectPage();
+</script>
+
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DripDropShop • Premium Catalog</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header" id="main-header">
+    <div class="container header-grid">
+      <div class="header-spacer"></div>
+
+      <div class="header-center">
+        <a href="#inicio" aria-label="Voltar ao início">
+          <img src="img/logo/Driplogo.png" alt="DripDropShop" class="logo-img">
+        </a>
+      </div>
+
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="#produtos">PRODUTOS</a>
+        <a href="#como-encomendar">ENCOMENDAR</a>
+        <a href="#revenda">REVENDA</a>
+        <a href="https://wa.me/351XXXXXXXXX" class="nav-contact" target="_blank" rel="noopener">CONTACTO</a>
+      </nav>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <nav class="mobile-nav" aria-label="Navegação mobile">
+      <a href="#produtos">PRODUTOS</a>
+      <a href="#como-encomendar">ENCOMENDAR</a>
+      <a href="#revenda">REVENDA</a>
+      <a href="https://wa.me/351XXXXXXXXX" target="_blank" rel="noopener">CONTACTO</a>
+    </nav>
+  </header>
+
+
+  <!-- HERO -->
+  <section class="hero-brand" id="inicio">
+    <img src="assets/hero-desktop.webp" alt="DripDropShop Banner" class="hero-img">
+    <div class="hero-overlay">
+      <div class="hero-text-box">
+        <span class="hero-subtitle">NEW COLLECTION 2026</span>
+        <h1 class="hero-title">DRIP DROP SHOP</h1>
+        <div class="hero-actions">
+          <a href="#produtos" class="btn-hero-main">EXPLORAR CATÁLOGO</a>
+          <a href="#como-encomendar" class="btn-hero-secondary">COMO COMPRAR</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- REVIEWS STRIP -->
+  <section class="reviews-strip" aria-label="Reviews Vinted">
+    <img
+      src="img/banner/Reviews_Vinted%20.png"
+      alt="Reviews Vinted"
+      class="reviews-title-img"
+    >
+
+    <div class="reviews-track" id="reviewsTrack">
+      <div class="review-item"><img src="assets/reviews/review-01.png" alt="Review 1"></div>
+      <div class="review-item"><img src="assets/reviews/review-02.png" alt="Review 2"></div>
+      <div class="review-item"><img src="assets/reviews/review-03.png" alt="Review 3"></div>
+      <div class="review-item"><img src="assets/reviews/review-04.png" alt="Review 4"></div>
+      <div class="review-item"><img src="assets/reviews/review-05.png" alt="Review 5"></div>
+      <div class="review-item"><img src="assets/reviews/review-06.png" alt="Review 6"></div>
+      <div class="review-item"><img src="assets/reviews/review-07.png" alt="Review 7"></div>
+      <div class="review-item"><img src="assets/reviews/review-08.png" alt="Review 8"></div>
+      <div class="review-item"><img src="assets/reviews/review-09.png" alt="Review 9"></div>
+      <div class="review-item"><img src="assets/reviews/review-10.png" alt="Review 10"></div>
+      <div class="review-item"><img src="assets/reviews/review-11.png" alt="Review 11"></div>
+      <div class="review-item"><img src="assets/reviews/review-12.png" alt="Review 12"></div>
+      <div class="review-item"><img src="assets/reviews/review-13.png" alt="Review 13"></div>
+      <div class="review-item"><img src="assets/reviews/review-14.png" alt="Review 14"></div>
+      <div class="review-item"><img src="assets/reviews/review-15.png" alt="Review 15"></div>
+    </div>
+  </section>
+
+ <section class="coupon-section">
+    <div class="brutalist-container">
+      <input
+        id="couponInput"
+        type="text"
+        class="brutalist-input smooth-type"
+        placeholder="INSERE AQUI!"
+        maxlength="10"
+        autocomplete="off"
+        aria-label="Código de desconto"
+      />
+      <label class="brutalist-label">TENS CÓDIGO DE DESCONTO?</label>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+
+    <!-- PRODUTOS -->
+    <section id="produtos" aria-label="Catálogo de produtos">
+      <div class="section-title-box">
+        <div class="title-underline"></div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="products-loading" class="products-loading" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>A carregar produtos...</p>
+      </div>
+
+      <div class="products-wrapper">
+        <div class="products-floating" aria-hidden="true">
+          <div class="sticky-card diagonal">
+            <span class="sticky-eyebrow">VANTAGEM</span>
+            <h3>Portes gratuitos</h3>
+            <p>na compra de<br><strong>2 artigos ou mais</strong></p>
+            <small>Válido via Vinted</small>
+          </div>
+        </div>
+
+        <div id="products-grid" class="products-grid"></div>
+      </div>
+    </section>
+
+    <!-- COMO ENCOMENDAR -->
+    <section id="como-encomendar" class="order-section">
+      <div class="order-banner-container">
+        <img src="img/banner/BannerDRPDRPxVinted.png" alt="DripDrop x Vinted" class="order-promo-img">
+      </div>
+
+      <div class="order-content-card">
+        <h2 class="order-main-title">Como encomendar</h2>
+
+        <div class="order-steps-list">
+          <div class="order-item"><span class="order-num">1.</span><p>Explore o catálogo e identifique o artigo do seu interesse.</p></div>
+          <div class="order-item"><span class="order-num">2.</span><p>Entre em contacto connosco através do <strong>WhatsApp</strong>.</p></div>
+          <div class="order-item"><span class="order-num">3.</span><p>Será criado um <strong>anúncio personalizado na Vinted</strong>.</p></div>
+          <div class="order-item"><span class="order-num">4.</span><p>O <strong>link da Vinted</strong> é enviado via WhatsApp.</p></div>
+          <div class="order-item"><span class="order-num">5.</span><p>O anúncio inclui artigo, portes e seguro do comprador.</p></div>
+          <div class="order-item"><span class="order-num">6.</span><p>O pagamento fica seguro na Vinted até à entrega do artigo.</p></div>
+        </div>
+
+        <div class="order-info-footer">
+          <p>
+            Não tem conta Vinted?
+            Crie uma <a href="https://www.vinted.pt/member/signup/select_type?s=referral" target="_blank" rel="noopener" class="vinted-link">aqui</a>.
+          </p>
+          <p class="disclaimer">Nota: Não efetuamos trocas. Todas as medidas são indicadas no anúncio.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENVIOS E PRAZOS -->
+    <section id="envios-prazos" class="order-section">
+      <div class="order-content-card">
+        <h2 class="order-main-title">Envios e prazos</h2>
+
+        <div class="order-steps-list">
+          <div class="order-item"><span class="order-num">•</span><p>Todos os envios são realizados <strong>exclusivamente através da Vinted</strong>, utilizando os métodos de envio disponíveis na plataforma.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>O artigo é preparado para envio <strong>apenas após a confirmação do pagamento</strong> no anúncio Vinted correspondente.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>Após o pagamento, o envio é efetuado normalmente no prazo de <strong>24 horas úteis</strong>.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>O prazo de entrega final depende do método de envio escolhido na Vinted e da transportadora associada.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>A Vinted atua como intermediária durante todo o processo, garantindo proteção ao comprador até à receção do artigo.</p></div>
+        </div>
+
+        <div class="order-info-footer">
+          <p class="disclaimer">Nota: A DripDropShop não se responsabiliza por compras efetuadas fora do link Vinted atribuído via WhatsApp para cada encomenda.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INFORMAÇÃO LEGAL -->
+    <section id="informacao-legal" class="order-section">
+      <div class="order-content-card">
+        <h2 class="order-main-title">Informação legal e condições</h2>
+
+        <div class="order-steps-list">
+          <div class="order-item"><span class="order-num">•</span><p>A <strong>DripDropShop</strong> atua como curadoria independente de artigos de streetwear, facilitando a ligação entre o comprador e a plataforma Vinted.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>Todas as vendas são concluídas <strong>exclusivamente através da Vinted</strong>, sendo esta a entidade responsável pelo processamento do pagamento e pelo seguro do comprador.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>O artigo só é preparado para envio após a confirmação do pagamento no anúncio Vinted atribuído ao cliente via WhatsApp.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>A DripDropShop não solicita nem aceita pagamentos diretos, nem se responsabiliza por transações efetuadas fora do link Vinted fornecido para cada encomenda.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>Todos os artigos disponibilizados são descritos de forma detalhada nos anúncios correspondentes, incluindo estado, medidas e características relevantes.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>Não são efetuadas trocas ou devoluções, exceto nos casos previstos e mediados pela política da Vinted.</p></div>
+        </div>
+
+        <div class="order-info-footer">
+          <p class="disclaimer">Ao prosseguir com uma encomenda, o cliente declara ter lido e aceite as condições acima descritas.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVENDA -->
+    <section id="revenda" class="order-section">
+      <div class="order-content-card">
+        <h2 class="order-main-title">Acesso a stock para revenda</h2>
+
+        <div class="order-steps-list">
+          <div class="order-item"><span class="order-num">•</span><p>Os interessados podem entrar em contacto com a DripDropShop <strong>sem qualquer compromisso</strong>, com o objetivo de esclarecer dúvidas, compreender melhor o funcionamento do modelo de revenda e avaliar se este se adequa ao seu perfil.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>A DripDropShop disponibiliza produtos variados e selecionados, adequados para atividades de revenda na área de streetwear, assegurando padrões de qualidade.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>A revenda pode representar uma <strong>renda extra</strong>, dependendo exclusivamente do empenho, dedicação e estratégia individual de cada revendedor, não existindo garantias de resultados financeiros.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>Existe a possibilidade de revender artigos <strong>sem qualquer investimento inicial</strong>, através do modelo de <strong>Vinted Dropshipping</strong>.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>Toda a comunicação, esclarecimento de dúvidas e acompanhamento do processo de revenda é realizada exclusivamente através do <strong>Discord oficial da comunidade DripDropShop</strong>.</p></div>
+          <div class="order-item"><span class="order-num">•</span><p>Para qualquer questão relacionada com revenda, stock disponível ou funcionamento do modelo, o utilizador deverá <strong>abrir um ticket no nosso Discord</strong>, sendo as solicitações respondidas num prazo médio de <strong>até 24 horas</strong>.</p></div>
+        </div>
+
+        <div class="discord-cta-wrapper">
+          <a
+            href="https://discord.gg/6bCbqEEGhX"
+            target="_blank"
+            rel="noopener"
+            class="discord-cta-card"
+            aria-label="Junta-te ao nosso Discord"
+          >
+            <span class="discord-glow"></span>
+            <span class="discord-overlay"></span>
+
+            <span class="discord-content">
+              <span class="discord-icon-box">
+                <img src="assets/icons/discord.svg" alt="Discord" class="discord-icon">
+              </span>
+
+              <span class="discord-text">
+                <strong>Discord DripDropShop</strong>
+                <small>Junta-te ao nosso Discord</small>
+              </span>
+
+              <span class="discord-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- IMAGE MODAL -->
+  <div id="image-modal" class="image-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <button class="modal-close" type="button" aria-label="Fechar">×</button>
+    <button class="modal-nav prev" type="button" aria-label="Imagem anterior">‹</button>
+    <img id="modal-image" src="" alt="">
+    <button class="modal-nav next" type="button" aria-label="Imagem seguinte">›</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <nav class="footer-nav" aria-label="Navegação do rodapé">
+        <a href="#produtos">Produtos</a>
+        <a href="#como-encomendar">Como encomendar</a>
+        <a href="#envios-prazos">Envios e prazos</a>
+        <a href="#informacao-legal">Informação legal</a>
+        <a href="https://wa.me/351XXXXXXXXX" target="_blank" rel="noopener">Contacto</a>
+      </nav>
+
+      <div class="footer-meta">
+        <span>© 2026 DripDropShop</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="config.js" defer></script>
+  <script src="products.js" defer></script>
+  <script src="catalog.js" defer></script>
+
+  <script>
+    // Header background on scroll
+    window.addEventListener("scroll", () => {
+      const header = document.getElementById("main-header");
+      header.classList.toggle("scrolled", window.scrollY > 50);
+    });
+
+    // Mobile menu toggle
+    (() => {
+      const toggle = document.querySelector('.mobile-menu-toggle');
+      const mobileNav = document.querySelector('.mobile-nav');
+      
+      if (!toggle || !mobileNav) return;
+
+      toggle.addEventListener('click', () => {
+        const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', !isOpen);
+        toggle.classList.toggle('active');
+        mobileNav.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+      });
+
+      // Close menu when clicking on a link
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.classList.remove('active');
+          mobileNav.classList.remove('active');
+          document.body.classList.remove('menu-open');
+        });
+      });
+    })();
+
+    // Reviews infinite loop
+    (() => {
+      const track = document.getElementById("reviewsTrack");
+      if (!track) return;
+
+      // Clone only once
+      const clone = track.innerHTML;
+      track.innerHTML += clone;
+
+      let position = 0;
+      const speed = 0.35;
+      let paused = false;
+
+      track.parentElement.addEventListener("mouseenter", () => paused = true);
+      track.parentElement.addEventListener("mouseleave", () => paused = false);
+
+      function animate() {
+        if (!paused) {
+          position -= speed;
+          const resetPoint = track.scrollWidth / 2;
+          if (Math.abs(position) >= resetPoint) position = 0;
+          track.style.transform = `translateX(${position}px)`;
+        }
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    })();
+
+    // Image modal functionality
+    (() => {
+      const modal = document.getElementById('image-modal');
+      const modalImg = document.getElementById('modal-image');
+      const closeBtn = modal.querySelector('.modal-close');
+      const prevBtn = modal.querySelector('.modal-nav.prev');
+      const nextBtn = modal.querySelector('.modal-nav.next');
+      
+      if (!modal || !modalImg) return;
+
+      let currentImages = [];
+      let currentIndex = 0;
+
+      // Open modal when clicking on product image
+      document.addEventListener('click', (e) => {
+        const productImg = e.target.closest('.product-image');
+        if (!productImg) return;
+
+        try {
+          currentImages = JSON.parse(productImg.dataset.images || "[]");
+          currentIndex = parseInt(productImg.dataset.index || "0", 10);
+        } catch (err) {
+          console.error("Error parsing images:", err);
+          return;
+        }
+
+        if (!currentImages.length) return;
+
+        modalImg.src = currentImages[currentIndex];
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+
+      // Close modal
+      const closeModal = () => {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      };
+
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // Navigate images in modal
+      prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        modalImg.src = currentImages[currentIndex];
+      });
+
+      nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        modalImg.src = currentImages[currentIndex];
+      });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('active')) return;
+        
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') prevBtn.click();
+        if (e.key === 'ArrowRight') nextBtn.click();
+      });
+    })();
+  </script>
+
+</body>
+</html>
