@@ -1,9 +1,9 @@
-<!DOCTYPE html>
 <script>
-  if (!sessionStorage.getItem("dd_admin")) {
-    location.replace("login.html");
+  if (sessionStorage.getItem("dd_admin") !== "1") {
+    window.location.href = "login.html";
   }
 </script>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
   <link rel="manifest" href="./manifest.json">
