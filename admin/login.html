@@ -61,28 +61,32 @@
 
   <div id="loginError">Código inválido</div>
 
-  <script>
-    // 🔐 CÓDIGO SECRETO
-    const SECRET_CODE = "Dr1pDr0p.2026";
+<script>
+  const SECRET_CODE = "Dr1pDr0p.2026";
+  const KEY = "dd_admin";
 
-    // Se já estiver autenticado, entra direto
-    if (sessionStorage.getItem("dd_admin")) {
-      location.replace("index.html");
+  // Se já estiver autenticado, entra direto
+  if (sessionStorage.getItem(KEY) === "1") {
+    window.location.href = "index.html";
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const input = document.getElementById("accessCode").value.trim();
+
+    if (input === SECRET_CODE) {
+      sessionStorage.setItem(KEY, "1");
+
+      // pequeno delay evita race conditions no Safari/iOS
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 50);
+    } else {
+      document.getElementById("loginError").style.display = "block";
     }
-
-    document.getElementById("loginForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const input = document.getElementById("accessCode").value.trim();
-
-      if (input === SECRET_CODE) {
-        sessionStorage.setItem("dd_admin", "1");
-        location.href = "index.html";
-      } else {
-        document.getElementById("loginError").style.display = "block";
-      }
-    });
-  </script>
+  });
+</script>
 
 </body>
 </html>
