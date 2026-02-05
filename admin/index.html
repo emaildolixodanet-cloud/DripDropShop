@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<script>
+  if (!sessionStorage.getItem("dd_admin")) {
+    location.replace("login.html");
+  }
+</script>
+
 <script type="module">
   import { protectPage } from "./auth.js";
   protectPage();
