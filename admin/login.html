@@ -4,39 +4,85 @@
   <meta charset="utf-8">
   <meta name="robots" content="noindex,nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DRIPDROP · Admin</title>
+  <title>DRIPDROPSHOP · PAINEL</title>
+
+  <style>
+    body {
+      text-align: center;
+      padding: 40px;
+      font-family: sans-serif;
+    }
+
+    img {
+      width: 120px;
+      margin-bottom: 10px;
+    }
+
+    input {
+      padding: 10px;
+      width: 220px;
+      margin-top: 15px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    #loginError {
+      display: none;
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>DRIPDROP · Painel</h2>
+  <!-- LOGOS (mantidos) -->
+  <img src="assets/Driplogo.png" alt="DripDrop">
+  <img src="assets/logo.png" alt="DripDrop">
 
-<form id="loginForm">
-  <input
-    id="code"
-    type="password"
-    placeholder="Código de acesso"
-    autocomplete="off"
-  />
-  <button>Entrar</button>
-</form>
+  <h2>DRIPDROPSHOP · PAINEL</h2>
+  <p>Acesso restrito</p>
 
-<p id="err" style="display:none;color:red">Código inválido</p>
+  <!-- LOGIN -->
+  <form id="loginForm">
+    <input
+      id="accessCode"
+      type="password"
+      placeholder="Código de acesso"
+      autocomplete="off"
+    />
+    <br>
+    <button type="submit">Entrar</button>
+  </form>
 
-<script>
-  const SECRET = "Dr1pDr0p.2026";
+  <div id="loginError">Código inválido</div>
 
-  document.getElementById("loginForm").onsubmit = (e) => {
-    e.preventDefault();
-    const code = document.getElementById("code").value.trim();
+  <script>
+    // 🔐 CÓDIGO SECRETO
+    const SECRET_CODE = "Dr1pDr0p.2026";
 
-    if (code === SECRET) {
-      sessionStorage.setItem("dd_admin", "1");
-      location.href = "index.html";
-    } else {
-      document.getElementById("err").style.display = "block";
+    // Se já estiver autenticado, entra direto
+    if (sessionStorage.getItem("dd_admin")) {
+      location.replace("index.html");
     }
-  };
-</script>
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const input = document.getElementById("accessCode").value.trim();
+
+      if (input === SECRET_CODE) {
+        sessionStorage.setItem("dd_admin", "1");
+        location.href = "index.html";
+      } else {
+        document.getElementById("loginError").style.display = "block";
+      }
+    });
+  </script>
 
 </body>
 </html>
