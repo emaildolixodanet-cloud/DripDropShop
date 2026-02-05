@@ -1,90 +1,65 @@
 // ==============================
-// DRIPDROP ADMIN AUTH (FINAL)
+// DRIPDROP ADMIN AUTH (LOCAL CODE)
 // ==============================
+//
+// ✅ Works on GitHub Pages + iOS (Safari/PWA) — no CORS, no backend.
+// 🔐 Change the secret code below when you want.
+//
+// NOTE: This is NOT "hacker-proof" (static sites never are). It blocks 99% of people.
 
-// ⚠️ Endpoint Apps Script (SEM /u/, SEM headers)
-const AUTH_ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbxmJbi24_yxLVg3geVwKtEejUxReslME_NpV7X3pjreh7KpnB5NKlitD7EGq4PHRb_z/exec";
+const SECRET_CODE = "Dr1pDr0p.2026"; // <-- MUDA AQUI
+const KEY = "dd_admin_auth_v1";
 
-const STORAGE_KEY = "dripdrop_admin_token";
+function show(el, on) {
+  if (!el) return;
+  el.style.display = on ? "block" : "none";
+}
 
-// ==============================
-// LOGIN
-// ==============================
-export function setupLogin() {
+export function isAuthed() {
+  return localStorage.getItem(KEY) === "1";
+}
+
+export function logout(redirect = "login.html") {
+  localStorage.removeItem(KEY);
+  window.location.replace(redirect);
+}
+
+// ---------- LOGIN (login.html) ----------
+export function setupLogin(options = {}) {
+  const redirect = options.redirect || "index.html";
+
   const form = document.getElementById("loginForm");
   const input = document.getElementById("accessCode");
   const error = document.getElementById("loginError");
 
+  if (isAuthed()) {
+    window.location.replace(redirect);
+    return;
+  }
+
   if (!form || !input) return;
 
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (error) error.style.display = "none";
 
-    try {
-      // ⚠️ FORM POST (application/x-www-form-urlencoded)
-      const body = new URLSearchParams();
-      body.append("code", input.value.trim());
+    const code = (input.value || "").trim();
 
-      const res = await fetch(AUTH_ENDPOINT, {
-        method: "POST",
-        body
-      });
-
-      const data = await res.json();
-
-      if (!data.ok || !data.token) {
-        if (error) {
-          error.textContent = "Código inválido";
-          error.style.display = "block";
-        }
-        return;
-      }
-
-      // Guardar token e entrar
-      localStorage.setItem(STORAGE_KEY, data.token);
-      window.location.href = "./index.html";
-
-    } catch (err) {
-      if (error) {
-        error.textContent = "Erro de ligação";
-        error.style.display = "block";
-      }
+    if (code === SECRET_CODE) {
+      localStorage.setItem(KEY, "1");
+      // tiny delay helps Safari/PWA settle state
+      setTimeout(() => window.location.replace(redirect), 30);
+    } else {
+      if (error) error.textContent = "Código inválido";
+      show(error, true);
     }
   });
 }
 
-// ==============================
-// PROTEÇÃO DAS PÁGINAS ADMIN
-// ==============================
-export async function protectPage() {
-  const token = localStorage.getItem(STORAGE_KEY);
+// ---------- PROTECTION (index.html) ----------
+export function protectPage(options = {}) {
+  const login = options.login || "login.html";
 
-  if (!token) {
-    window.location.replace("./login.html");
-    return;
+  if (!isAuthed()) {
+    window.location.replace(login);
   }
-
-  try {
-    const res = await fetch(`${AUTH_ENDPOINT}?token=${encodeURIComponent(token)}`);
-    const data = await res.json();
-
-    if (!data.ok) {
-      localStorage.removeItem(STORAGE_KEY);
-      window.location.replace("./login.html");
-    }
-
-  } catch {
-    localStorage.removeItem(STORAGE_KEY);
-    window.location.replace("./login.html");
-  }
-}
-
-// ==============================
-// LOGOUT (opcional)
-// ==============================
-export function logout() {
-  localStorage.removeItem(STORAGE_KEY);
-  window.location.replace("./login.html");
 }
