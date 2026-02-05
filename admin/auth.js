@@ -1,49 +1,52 @@
-// AUTH VIA APPS SCRIPT — FINAL E MINIMAL
+// =====================
+// AUTH VIA APPS SCRIPT
+// =====================
 
+// 🔐 Endpoint seguro (Apps Script)
 const AUTH_ENDPOINT = "https://script.google.com/macros/s/AKfycbwtpepmYjiw1zVHtpe_vn5zA2sWHbKCT0oYAY6B5guaVX3oQNSFOKcouGrJ6abwQaUx/exec";
+
+// Storage do token
 const STORAGE_KEY = "dripdrop_admin_token";
 
-// LOGIN
-export function setupLogin() {
-  console.log("AUTH: setupLogin");
-
+// ---------- LOGIN ----------
+export async function setupLogin() {
   const form = document.getElementById("loginForm");
   const input = document.getElementById("accessCode");
   const error = document.getElementById("loginError");
 
-  if (!form || !input) {
-    console.error("AUTH: missing elements");
-    return;
-  }
+  if (!form || !input) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("AUTH: submit");
-
     error.style.display = "none";
 
-    const res = await fetch(AUTH_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: input.value.trim() })
-    });
+    try {
+      const res = await fetch(AUTH_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: input.value })
+      });
 
-    const data = await res.json();
-    console.log("AUTH: response", data);
+      const data = await res.json();
 
-    if (!data.ok) {
-      error.textContent = "Código inválido";
+      if (!data.ok) {
+        error.textContent = "Código inválido";
+        error.style.display = "block";
+        return;
+      }
+
+      localStorage.setItem(STORAGE_KEY, data.token);
+      window.location.href = "./index.html";
+
+    } catch {
+      error.textContent = "Erro de ligação";
       error.style.display = "block";
-      return;
     }
-
-    localStorage.setItem(STORAGE_KEY, data.token);
-    window.location.href = "./index.html";
   });
 }
 
-// PROTEÇÃO
-export function protectPage() {
+// ---------- PROTEÇÃO ----------
+export async function protectPage() {
   const token = localStorage.getItem(STORAGE_KEY);
 
   if (!token) {
@@ -51,16 +54,16 @@ export function protectPage() {
     return;
   }
 
-  fetch(`${AUTH_ENDPOINT}?token=${token}`)
-    .then(r => r.json())
-    .then(data => {
-      if (!data.ok) {
-        localStorage.removeItem(STORAGE_KEY);
-        window.location.href = "./login.html";
-      }
-    })
-    .catch(() => {
+  try {
+    const res = await fetch(`${AUTH_ENDPOINT}?token=${token}`);
+    const data = await res.json();
+
+    if (!data.ok) {
       localStorage.removeItem(STORAGE_KEY);
       window.location.href = "./login.html";
-    });
+    }
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.href = "./login.html";
+  }
 }
