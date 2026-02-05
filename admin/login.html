@@ -1,243 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
   <meta name="robots" content="noindex,nofollow">
-  <title>DRIPDROPSHOP · PAINEL</title>
-
-  <style>
-    /* === RESET & BASE === */
-    * { margin:0; padding:0; box-sizing:border-box; }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background:#000;
-      color:#fff;
-      height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-    }
-
-    /* === BACKGROUND === */
-    .bg-animation {
-      position:fixed;
-      inset:0;
-      background:linear-gradient(135deg,#000 0%,#0a0a0a 50%,#000 100%);
-      z-index:0;
-    }
-
-    .bg-animation::before {
-      content:'';
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(circle at 20% 50%, rgba(0,119,130,.15), transparent 50%),
-        radial-gradient(circle at 80% 50%, rgba(0,119,130,.1), transparent 50%);
-      animation:pulse 8s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%,100%{opacity:.5}
-      50%{opacity:1}
-    }
-
-    /* === CONTAINER === */
-    .login-container {
-      position:relative;
-      z-index:2;
-      width:90%;
-      max-width:480px;
-      text-align:center;
-    }
-
-    /* === LOGO COIN === */
-    .coin-wrapper {
-      height:180px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin-bottom:30px;
-    }
-
-    .coin {
-      width:160px;
-      height:160px;
-      animation:coinDrop 1.5s ease-out;
-      filter:drop-shadow(0 20px 40px rgba(0,119,130,.5));
-    }
-
-    @keyframes coinDrop {
-      0%{transform:translateY(-200px) scale(.5);opacity:0}
-      100%{transform:translateY(0) scale(1);opacity:1}
-    }
-
-    .coin img {
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      border-radius:50%;
-      background:#000;
-      padding:10px;
-    }
-
-    /* === GLASS CARD === */
-    .glass-card {
-      background:rgba(255,255,255,.05);
-      backdrop-filter:blur(20px);
-      border-radius:30px;
-      padding:45px 35px;
-      border:1px solid rgba(255,255,255,.1);
-      box-shadow:0 8px 32px rgba(0,0,0,.3);
-    }
-
-    .brand-text img {
-      max-width:260px;
-      margin-bottom:15px;
-    }
-
-    h2 {
-      letter-spacing:4px;
-      font-size:1.3rem;
-      font-weight:900;
-      text-transform:uppercase;
-      background:linear-gradient(135deg,#fff,#007782);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      margin-bottom:8px;
-    }
-
-    .subtitle {
-      font-size:.85rem;
-      opacity:.6;
-      margin-bottom:30px;
-      letter-spacing:2px;
-      text-transform:uppercase;
-    }
-
-    /* === INPUT === */
-    .code-input {
-      width:100%;
-      padding:16px 20px;
-      border-radius:40px;
-      border:none;
-      outline:none;
-      text-align:center;
-      font-size:1rem;
-      letter-spacing:2px;
-      margin-bottom:18px;
-      background:rgba(255,255,255,.08);
-      color:#fff;
-    }
-
-    .code-input::placeholder {
-      color:rgba(255,255,255,.4);
-    }
-
-    /* === BUTTON === */
-    .login-btn {
-      width:100%;
-      background:linear-gradient(135deg,#007782,#00a8b8);
-      color:#fff;
-      border:none;
-      padding:16px;
-      border-radius:40px;
-      font-weight:900;
-      letter-spacing:3px;
-      cursor:pointer;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .login-btn.loading {
-      pointer-events:none;
-    }
-
-    .login-btn.loading::after {
-      content:'';
-      position:absolute;
-      top:50%;
-      left:50%;
-      width:22px;
-      height:22px;
-      margin:-11px;
-      border:3px solid rgba(255,255,255,.3);
-      border-top-color:#fff;
-      border-radius:50%;
-      animation:spin .8s linear infinite;
-    }
-
-    @keyframes spin {
-      to{transform:rotate(360deg)}
-    }
-
-    /* === ERROR === */
-    .error {
-      display:none;
-      margin-top:15px;
-      font-size:.85rem;
-      color:#ff6b6b;
-    }
-
-    /* === FOOTER === */
-    .footer {
-      position:fixed;
-      bottom:25px;
-      left:50%;
-      transform:translateX(-50%);
-      font-size:.7rem;
-      opacity:.4;
-      letter-spacing:1px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DRIPDROP · Admin</title>
 </head>
-
 <body>
 
-  <div class="bg-animation"></div>
+<h2>DRIPDROP · Painel</h2>
 
-  <div class="login-container">
-    <div class="coin-wrapper">
-      <div class="coin">
-        <img src="./assets/logo.png" alt="DripDropShop">
-      </div>
-    </div>
+<form id="loginForm">
+  <input
+    id="code"
+    type="password"
+    placeholder="Código de acesso"
+    autocomplete="off"
+  />
+  <button>Entrar</button>
+</form>
 
-    <div class="glass-card">
-      <div class="brand-text">
-        <img src="./assets/Driplogo.png" alt="DripDropShop">
-      </div>
+<p id="err" style="display:none;color:red">Código inválido</p>
 
-      <h2>Painel</h2>
-      <p class="subtitle">Acesso restrito</p>
+<script>
+  const SECRET = "Dr1pDr0p.2026";
 
-      <form id="loginForm">
-        <input
-          id="accessCode"
-          class="code-input"
-          type="password"
-          placeholder="Código de acesso"
-          required
-        />
-        <button class="login-btn" type="submit">
-          AUTENTICAR
-        </button>
-      </form>
+  document.getElementById("loginForm").onsubmit = (e) => {
+    e.preventDefault();
+    const code = document.getElementById("code").value.trim();
 
-      <p id="loginError" class="error">Código inválido</p>
-    </div>
-  </div>
-
-  <div class="footer">
-    DRIPDROPSHOP © 2026 · STREETWEAR
-  </div>
-
-  <script type="module">
-    import { setupLogin } from "./auth.js";
-    setupLogin();
-  </script>
+    if (code === SECRET) {
+      sessionStorage.setItem("dd_admin", "1");
+      location.href = "index.html";
+    } else {
+      document.getElementById("err").style.display = "block";
+    }
+  };
+</script>
 
 </body>
 </html>
