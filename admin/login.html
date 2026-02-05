@@ -4,435 +4,239 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex,nofollow">
-  <title>DRIPDROPSHOP · PAINEL ADMIN</title>
+  <title>DRIPDROPSHOP · PAINEL</title>
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* === RESET & BASE === */
+    * { margin:0; padding:0; box-sizing:border-box; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #000;
-      color: #fff;
-      overflow: hidden;
-      position: relative;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background:#000;
+      color:#fff;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
     }
 
-    /* Animated Background */
+    /* === BACKGROUND === */
     .bg-animation {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
-      z-index: 0;
+      position:fixed;
+      inset:0;
+      background:linear-gradient(135deg,#000 0%,#0a0a0a 50%,#000 100%);
+      z-index:0;
     }
 
     .bg-animation::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: 
-        radial-gradient(circle at 20% 50%, rgba(0, 119, 130, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 50%, rgba(0, 119, 130, 0.1) 0%, transparent 50%);
-      animation: pulse 8s ease-in-out infinite;
+      content:'';
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(0,119,130,.15), transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(0,119,130,.1), transparent 50%);
+      animation:pulse 8s ease-in-out infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
+      0%,100%{opacity:.5}
+      50%{opacity:1}
     }
 
-    /* Particles/Stars */
-    .particles {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .particle {
-      position: absolute;
-      background: #fff;
-      border-radius: 50%;
-      animation: float 20s linear infinite;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(100vh) scale(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100vh) scale(1);
-        opacity: 0;
-      }
-    }
-
-    /* Main Container */
+    /* === CONTAINER === */
     .login-container {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      padding: 40px;
-      max-width: 500px;
-      width: 90%;
+      position:relative;
+      z-index:2;
+      width:90%;
+      max-width:480px;
+      text-align:center;
     }
 
-    /* 3D Coin Animation */
+    /* === LOGO COIN === */
     .coin-wrapper {
-      perspective: 1000px;
-      margin-bottom: 40px;
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height:180px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:30px;
     }
 
     .coin {
-      width: 180px;
-      height: 180px;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: coinDrop 2s ease-out, coinRotate 4s linear 2s infinite;
-      filter: drop-shadow(0 20px 40px rgba(0, 119, 130, 0.5));
+      width:160px;
+      height:160px;
+      animation:coinDrop 1.5s ease-out;
+      filter:drop-shadow(0 20px 40px rgba(0,119,130,.5));
     }
 
     @keyframes coinDrop {
-      0% {
-        transform: translateY(-300px) rotateY(0deg) scale(0.3);
-        opacity: 0;
-      }
-      60% {
-        transform: translateY(20px) rotateY(720deg) scale(1.1);
-      }
-      80% {
-        transform: translateY(-10px) rotateY(900deg) scale(0.95);
-      }
-      100% {
-        transform: translateY(0) rotateY(1080deg) scale(1);
-        opacity: 1;
-      }
-    }
-
-    @keyframes coinRotate {
-      0% {
-        transform: rotateY(0deg);
-      }
-      100% {
-        transform: rotateY(360deg);
-      }
+      0%{transform:translateY(-200px) scale(.5);opacity:0}
+      100%{transform:translateY(0) scale(1);opacity:1}
     }
 
     .coin img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      backface-visibility: hidden;
-      border-radius: 50%;
-      background: #000;
-      padding: 10px;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      border-radius:50%;
+      background:#000;
+      padding:10px;
     }
 
-    /* Glass Card */
+    /* === GLASS CARD === */
     .glass-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px);
-      border-radius: 30px;
-      padding: 50px 40px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .glass-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0, 119, 130, 0.1), transparent);
-      animation: shine 3s infinite;
-    }
-
-    @keyframes shine {
-      0% { left: -100%; }
-      50%, 100% { left: 100%; }
-    }
-
-    /* Typography */
-    .brand-text {
-      margin-bottom: 10px;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease-out 1.5s forwards;
+      background:rgba(255,255,255,.05);
+      backdrop-filter:blur(20px);
+      border-radius:30px;
+      padding:45px 35px;
+      border:1px solid rgba(255,255,255,.1);
+      box-shadow:0 8px 32px rgba(0,0,0,.3);
     }
 
     .brand-text img {
-      max-width: 280px;
-      height: auto;
-      filter: drop-shadow(0 4px 8px rgba(0, 119, 130, 0.3));
+      max-width:260px;
+      margin-bottom:15px;
     }
 
     h2 {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, #fff 0%, #007782 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease-out 1.7s forwards;
+      letter-spacing:4px;
+      font-size:1.3rem;
+      font-weight:900;
+      text-transform:uppercase;
+      background:linear-gradient(135deg,#fff,#007782);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:8px;
     }
 
     .subtitle {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 40px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-weight: 600;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease-out 1.9s forwards;
+      font-size:.85rem;
+      opacity:.6;
+      margin-bottom:30px;
+      letter-spacing:2px;
+      text-transform:uppercase;
     }
 
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* === INPUT === */
+    .code-input {
+      width:100%;
+      padding:16px 20px;
+      border-radius:40px;
+      border:none;
+      outline:none;
+      text-align:center;
+      font-size:1rem;
+      letter-spacing:2px;
+      margin-bottom:18px;
+      background:rgba(255,255,255,.08);
+      color:#fff;
     }
 
-    /* Login Button */
+    .code-input::placeholder {
+      color:rgba(255,255,255,.4);
+    }
+
+    /* === BUTTON === */
     .login-btn {
-      background: linear-gradient(135deg, #007782 0%, #00a8b8 100%);
-      color: #fff;
-      border: none;
-      padding: 18px 50px;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.4s ease;
-      box-shadow: 
-        0 10px 30px rgba(0, 119, 130, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      opacity: 0;
-      animation: fadeInUp 0.8s ease-out 2.1s forwards;
+      width:100%;
+      background:linear-gradient(135deg,#007782,#00a8b8);
+      color:#fff;
+      border:none;
+      padding:16px;
+      border-radius:40px;
+      font-weight:900;
+      letter-spacing:3px;
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
     }
 
-    .login-btn::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    .login-btn:hover::before {
-      width: 300px;
-      height: 300px;
-    }
-
-    .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        0 15px 40px rgba(0, 119, 130, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .login-btn:active {
-      transform: translateY(0);
-    }
-
-    .login-btn span {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Loading State */
     .login-btn.loading {
-      pointer-events: none;
-    }
-
-    .login-btn.loading span {
-      opacity: 0;
+      pointer-events:none;
     }
 
     .login-btn.loading::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      top: 50%;
-      left: 50%;
-      margin-left: -10px;
-      margin-top: -10px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      content:'';
+      position:absolute;
+      top:50%;
+      left:50%;
+      width:22px;
+      height:22px;
+      margin:-11px;
+      border:3px solid rgba(255,255,255,.3);
+      border-top-color:#fff;
+      border-radius:50%;
+      animation:spin .8s linear infinite;
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to{transform:rotate(360deg)}
     }
 
-    /* Footer */
+    /* === ERROR === */
+    .error {
+      display:none;
+      margin-top:15px;
+      font-size:.85rem;
+      color:#ff6b6b;
+    }
+
+    /* === FOOTER === */
     .footer {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.4);
-      letter-spacing: 1px;
-      z-index: 10;
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .coin {
-        width: 140px;
-        height: 140px;
-      }
-
-      .glass-card {
-        padding: 40px 30px;
-      }
-
-      h2 {
-        font-size: 1.1rem;
-      }
-
-      .brand-text img {
-        max-width: 220px;
-      }
-
-      .login-btn {
-        padding: 16px 40px;
-        font-size: 0.9rem;
-      }
+      position:fixed;
+      bottom:25px;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:.7rem;
+      opacity:.4;
+      letter-spacing:1px;
     }
   </style>
 </head>
+
 <body>
-  
-  <!-- Background Animation -->
+
   <div class="bg-animation"></div>
 
-  <!-- Particles -->
-  <div class="particles" id="particles"></div>
-
-  <!-- Main Content -->
   <div class="login-container">
-    <!-- 3D Coin -->
     <div class="coin-wrapper">
       <div class="coin">
-        <img src="./assets/logo.png" alt="DripDropShop Logo">
+        <img src="./assets/logo.png" alt="DripDropShop">
       </div>
     </div>
 
-    <!-- Glass Card -->
     <div class="glass-card">
       <div class="brand-text">
         <img src="./assets/Driplogo.png" alt="DripDropShop">
       </div>
-      
-      <h2>Painel de Admin</h2>
-      <p class="subtitle">Acesso Restrito</p>
 
-      <button id="loginBtn" class="login-btn">
-        <span>Entrar com Google</span>
-      </button>
+      <h2>Painel</h2>
+      <p class="subtitle">Acesso restrito</p>
+
+      <form id="loginForm">
+        <input
+          id="accessCode"
+          class="code-input"
+          type="password"
+          placeholder="Código de acesso"
+          required
+        />
+        <button class="login-btn" type="submit">
+          AUTENTICAR
+        </button>
+      </form>
+
+      <p id="loginError" class="error">Código inválido</p>
     </div>
   </div>
 
-  <!-- Footer -->
   <div class="footer">
-    DRIPDROPSHOP © 2026 ·
+    DRIPDROPSHOP © 2026 · STREETWEAR
   </div>
 
   <script type="module">
-    // Particles generation
-    function createParticles() {
-      const container = document.getElementById('particles');
-      const particleCount = 30;
-
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        const size = Math.random() * 3 + 1;
-        const left = Math.random() * 100;
-        const delay = Math.random() * 20;
-        const duration = Math.random() * 10 + 15;
-        
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${left}%`;
-        particle.style.animationDelay = `${delay}s`;
-        particle.style.animationDuration = `${duration}s`;
-        particle.style.opacity = Math.random() * 0.5 + 0.3;
-        
-        container.appendChild(particle);
-      }
-    }
-
-    // Button interaction
-    const loginBtn = document.getElementById('loginBtn');
-    
-    loginBtn.addEventListener('click', () => {
-      loginBtn.classList.add('loading');
-      
-      // Simula autenticação (substitui com o teu auth.js)
-      setTimeout(() => {
-        import('./auth.js')
-          .then(module => {
-            if (module.setupLogin) {
-              module.setupLogin();
-            }
-          })
-          .catch(err => {
-            console.error('Auth module not found:', err);
-            // Fallback: redireciona ou mostra erro
-            loginBtn.classList.remove('loading');
-          });
-      }, 800);
-    });
-
-    // Initialize
-    createParticles();
+    import { setupLogin } from "./auth.js";
+    setupLogin();
   </script>
 
 </body>
