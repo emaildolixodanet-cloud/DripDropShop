@@ -3,7 +3,7 @@
 // =====================
 
 // 🔐 Endpoint seguro (Apps Script)
-const AUTH_ENDPOINT = "https://script.google.com/macros/s/AKfycbwtpepmYjiw1zVHtpe_vn5zA2sWHbKCT0oYAY6B5guaVX3oQNSFOKcouGrJ6abwQaUx/exec";
+const AUTH_ENDPOINT = "https://script.google.com/macros/s/AKfycby-Ax_jyrE0NNSaNtta3GfaIvsUbBwScmLvsge5FxP7jeJV4sglu71xY0ZiGwwmsUE/exec";
 
 // Storage do token
 const STORAGE_KEY = "dripdrop_admin_token";
