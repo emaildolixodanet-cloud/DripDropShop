@@ -6,56 +6,67 @@ import {
   signInWithRedirect,
   getRedirectResult,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-// 🔒 Emails autorizados (sempre em minúsculas)
 const ALLOWED_EMAILS = [
   "emaildolixodanet@gmail.com",
   "joaoloureirorios@gmail.com"
 ];
 
-// Inicialização Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// ------------------------
-// LOGIN (admin/login.html)
-// ------------------------
+await setPersistence(auth, browserLocalPersistence);
+
+// ---------- LOGIN ----------
 export function setupLogin() {
   const btn = document.getElementById("loginBtn");
 
   if (btn) {
     btn.onclick = async () => {
+      sessionStorage.setItem("login_redirect", "1");
       await signInWithRedirect(auth, provider);
     };
   }
 
-  // Trata o retorno do Google (iOS / PWA)
+  // Resolve o redirect (iOS precisa)
   getRedirectResult(auth).catch(() => {});
 }
 
-// ------------------------
-// PROTEÇÃO (admin/index.html)
-// ------------------------
+// ---------- PROTEÇÃO ----------
 export function protectPage() {
   return new Promise((resolve) => {
-    onAuthStateChanged(auth, async (user) => {
+    let resolved = false;
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        window.location.href = "./login.html";
+        // ⚠️ só redireciona se NÃO vier de um redirect
+        if (!sessionStorage.getItem("login_redirect")) {
+          window.location.replace("./login.html");
+        }
         return;
       }
+
+      // login confirmado → limpar flag
+      sessionStorage.removeItem("login_redirect");
 
       const email = (user.email || "").toLowerCase();
 
       if (!ALLOWED_EMAILS.includes(email)) {
         await signOut(auth);
-        window.location.href = "./no-access.html";
+        window.location.replace("./no-access.html");
         return;
       }
 
-      resolve(user);
+      if (!resolved) {
+        resolved = true;
+        unsubscribe();
+        resolve(user);
+      }
     });
   });
 }
