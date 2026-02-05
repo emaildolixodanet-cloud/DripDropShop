@@ -61,32 +61,10 @@
 
   <div id="loginError">Código inválido</div>
 
-<script>
-  const SECRET_CODE = "Dr1pDr0p.2026";
-  const KEY = "dd_admin";
-
-  // Se já estiver autenticado, entra direto
-  if (sessionStorage.getItem(KEY) === "1") {
-    window.location.href = "index.html";
-  }
-
-  document.getElementById("loginForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const input = document.getElementById("accessCode").value.trim();
-
-    if (input === SECRET_CODE) {
-      sessionStorage.setItem(KEY, "1");
-
-      // pequeno delay evita race conditions no Safari/iOS
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 50);
-    } else {
-      document.getElementById("loginError").style.display = "block";
-    }
-  });
-</script>
+  <script type="module">
+    import { setupLogin } from "./auth.js";
+    setupLogin({ redirect: "index.html" });
+  </script>
 
 </body>
 </html>
