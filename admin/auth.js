@@ -13,7 +13,7 @@ import {
 
 const ALLOWED_EMAILS = [
   "emaildolixodanet@gmail.com",
-  "joaoloureirorios@gmail.com"
+  "infodripdropshop@gmail.com"
 ];
 
 const app = initializeApp(firebaseConfig);
