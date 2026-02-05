@@ -3,7 +3,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -11,10 +12,10 @@ import {
 // 🔒 Emails autorizados (sempre em minúsculas)
 const ALLOWED_EMAILS = [
   "emaildolixodanet@gmail.com",
-  "infodripdropshop@gmail.com",
-  "email_da_tua_mulher@gmail.com"
+  "joaoloureirorios@gmail.com"
 ];
 
+// Inicialização Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -23,24 +24,16 @@ const provider = new GoogleAuthProvider();
 // LOGIN (admin/login.html)
 // ------------------------
 export function setupLogin() {
-  document.getElementById("loginBtn").onclick = async () => {
-    await signInWithPopup(auth, provider);
-  };
+  const btn = document.getElementById("loginBtn");
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) return;
+  if (btn) {
+    btn.onclick = async () => {
+      await signInWithRedirect(auth, provider);
+    };
+  }
 
-    const email = user.email.toLowerCase();
-
-    if (!ALLOWED_EMAILS.includes(email)) {
-      signOut(auth);
-      window.location.href = "./no-access.html";
-      return;
-    }
-
-    // ✅ entra na app interna
-    window.location.href = "./index.html";
-  });
+  // Trata o retorno do Google (iOS / PWA)
+  getRedirectResult(auth).catch(() => {});
 }
 
 // ------------------------
@@ -48,16 +41,16 @@ export function setupLogin() {
 // ------------------------
 export function protectPage() {
   return new Promise((resolve) => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "./login.html";
         return;
       }
 
-      const email = user.email.toLowerCase();
+      const email = (user.email || "").toLowerCase();
 
       if (!ALLOWED_EMAILS.includes(email)) {
-        signOut(auth);
+        await signOut(auth);
         window.location.href = "./no-access.html";
         return;
       }
