@@ -7,8 +7,13 @@
 //
 // NOTE: This is NOT "hacker-proof" (static sites never are). It blocks 99% of people.
 
-const SECRET_CODE = "Dr1pDr0p.2026"; // <-- MUDA AQUI
-const KEY = "dd_admin_auth_v1";
+// 🔒 código ofuscado
+const _a = "RHIxcERy";
+const _b = "MHAuMjAyNg==";
+
+// monta o código real
+const SECRET_CODE = atob(_a) + atob(_b);
+
 
 function show(el, on) {
   if (!el) return;
