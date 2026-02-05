@@ -1,72 +1,67 @@
-import { firebaseConfig } from "./firebase-config.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
-  signOut,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+// =====================
+// AUTH VIA APPS SCRIPT
+// =====================
 
-const ALLOWED_EMAILS = [
-  "emaildolixodanet@gmail.com",
-  "infodripdropshop@gmail.com"
-];
+// 🔐 Endpoint seguro (Apps Script)
+const AUTH_ENDPOINT = "https://script.google.com/macros/s/AKfycbwtpepmYjiw1zVHtpe_vn5zA2sWHbKCT0oYAY6B5guaVX3oQNSFOKcouGrJ6abwQaUx/exec";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-await setPersistence(auth, browserLocalPersistence);
+// Storage do token
+const STORAGE_KEY = "dripdrop_admin_token";
 
 // ---------- LOGIN ----------
-export function setupLogin() {
-  const btn = document.getElementById("loginBtn");
+export async function setupLogin() {
+  const form = document.getElementById("loginForm");
+  const input = document.getElementById("accessCode");
+  const error = document.getElementById("loginError");
 
-  if (btn) {
-    btn.onclick = async () => {
-      sessionStorage.setItem("login_redirect", "1");
-      await signInWithRedirect(auth, provider);
-    };
-  }
+  if (!form || !input) return;
 
-  // Resolve o redirect (iOS precisa)
-  getRedirectResult(auth).catch(() => {});
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    error.style.display = "none";
+
+    try {
+      const res = await fetch(AUTH_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: input.value })
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        error.textContent = "Código inválido";
+        error.style.display = "block";
+        return;
+      }
+
+      localStorage.setItem(STORAGE_KEY, data.token);
+      window.location.href = "./index.html";
+
+    } catch {
+      error.textContent = "Erro de ligação";
+      error.style.display = "block";
+    }
+  });
 }
 
 // ---------- PROTEÇÃO ----------
-export function protectPage() {
-  return new Promise((resolve) => {
-    let resolved = false;
+export async function protectPage() {
+  const token = localStorage.getItem(STORAGE_KEY);
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        // ⚠️ só redireciona se NÃO vier de um redirect
-        if (!sessionStorage.getItem("login_redirect")) {
-          window.location.replace("./login.html");
-        }
-        return;
-      }
+  if (!token) {
+    window.location.href = "./login.html";
+    return;
+  }
 
-      // login confirmado → limpar flag
-      sessionStorage.removeItem("login_redirect");
+  try {
+    const res = await fetch(`${AUTH_ENDPOINT}?token=${token}`);
+    const data = await res.json();
 
-      const email = (user.email || "").toLowerCase();
-
-      if (!ALLOWED_EMAILS.includes(email)) {
-        await signOut(auth);
-        window.location.replace("./no-access.html");
-        return;
-      }
-
-      if (!resolved) {
-        resolved = true;
-        unsubscribe();
-        resolve(user);
-      }
-    });
-  });
-}
+    if (!data.ok) {
+      localStorage.removeItem(STORAGE_KEY);
+      window.location.href = "./login.html";
+    }
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.href = "./login.html";
