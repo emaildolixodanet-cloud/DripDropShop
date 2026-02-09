@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+  <!-- PWA Icons para iOS -->
+<link rel="apple-touch-icon" href="./assets/logo.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./assets/logo.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/logo.png">
+<link rel="apple-touch-icon" sizes="167x167" href="./assets/logo.png">
+
+<link rel="manifest" href="./manifest.json">
+  
+<!-- Favicon normal -->
+<link rel="icon" type="image/png" href="./assets/logo.png">
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0A0A0F">
   <title>DripDrop Admin</title>
-  
-  <!-- PWA Icons -->
-  <link rel="apple-touch-icon" href="./assets/logo.png">
-  <link rel="icon" type="image/png" href="./assets/logo.png">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     * {
@@ -25,8 +29,7 @@
     body {
       overflow: hidden;
       min-height: 100vh;
-      background: #000000;
-      font-family: 'Inter', sans-serif;
+      background: #0A0A0F;
     }
 
     /* ==========================================
@@ -45,6 +48,7 @@
       animation: splashDisappear 0.1s ease 2.3s forwards;
     }
 
+    /* Logo Badge (Redondo) */
     .splash-logo {
       width: 160px;
       height: 160px;
@@ -59,17 +63,19 @@
       filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.3));
     }
 
-    /* Animated ring around logo */
+    /* Subtle glow effect */
     .splash-logo::after {
       content: '';
       position: absolute;
-      inset: -20px;
-      border: 2px solid transparent;
-      border-top-color: rgba(0, 119, 130, 0.6);
-      border-radius: 50%;
-      animation: spinRing 2.4s linear;
+      inset: -30px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: glow 2.4s ease-in-out;
       z-index: -1;
     }
+
+    /* ==========================================
+       ANIMATIONS
+    ========================================== */
 
     @keyframes logoEntrance {
       0% {
@@ -90,14 +96,19 @@
       }
     }
 
-    @keyframes spinRing {
-      0% { transform: rotate(0deg); opacity: 0; }
-      20% { opacity: 1; }
-      80% { opacity: 1; }
-      100% { transform: rotate(720deg); opacity: 0; }
+    @keyframes glow {
+      0%, 100% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 0.6;
+      }
     }
 
     @keyframes splashDisappear {
+      0% {
+        opacity: 1;
+      }
       100% {
         opacity: 1;
         visibility: hidden;
@@ -105,74 +116,23 @@
     }
 
     /* ==========================================
-       LOGIN CONTENT (UIVERSE STYLE)
+       LOGIN CONTENT
     ========================================== */
 
     #loginContent {
       opacity: 0;
-      animation: contentFadeIn 0.8s ease 2.4s forwards;
+      animation: contentFadeIn 0.6s ease 2.4s forwards;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #0A0A0F;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Animated gradient background */
-    #loginContent::before {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 50% 50%, 
-        rgba(0, 119, 130, 0.1) 0%, 
-        transparent 50%);
-      animation: bgPulse 8s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes bgPulse {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.2); opacity: 0.8; }
     }
 
     @keyframes contentFadeIn {
       0% {
         opacity: 0;
-        transform: scale(0.95);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    /* ==========================================
-       LOGIN CARD (GLASSMORPHISM)
-    ========================================== */
-
-    .login-card {
-      position: relative;
-      width: 100%;
-      max-width: 420px;
-      margin: 0 20px;
-      background: rgba(22, 22, 30, 0.6);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 32px;
-      padding: 48px 32px;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      animation: cardEntry 0.8s cubic-bezier(0.4, 0, 0.2, 1) 2.6s both;
-    }
-
-    @keyframes cardEntry {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(15px);
       }
       100% {
         opacity: 1;
@@ -180,42 +140,31 @@
       }
     }
 
-    /* Subtle top glow */
-    .login-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      height: 1px;
-      background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0, 119, 130, 0.6), 
-        transparent);
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 30px 20px;
+      text-align: center;
     }
 
-    /* ==========================================
-       LOGO LETTERING
-    ========================================== */
-
+    /* Logo Lettering */
     .login-logo {
       width: 100%;
-      max-width: 280px;
-      margin: 0 auto 40px;
-      animation: logoSlideIn 0.8s ease 2.8s both;
+      max-width: 320px;
+      margin: 0 auto 48px;
+      animation: logoSlideIn 0.8s ease 2.6s both;
     }
 
     .login-logo img {
       width: 100%;
       height: auto;
-      filter: drop-shadow(0 4px 24px rgba(255, 255, 255, 0.2));
+      filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.15));
     }
 
     @keyframes logoSlideIn {
       0% {
         opacity: 0;
-        transform: translateY(-15px);
+        transform: translateY(-10px);
       }
       100% {
         opacity: 1;
@@ -224,34 +173,35 @@
     }
 
     .subtitle {
-      text-align: center;
       color: #6B6B7D;
-      font-size: 12px;
-      margin-bottom: 48px;
-      letter-spacing: 2px;
+      font-size: 13px;
+      margin-bottom: 56px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      font-weight: 600;
-      animation: subtitleFade 0.6s ease 3.0s both;
+      font-weight: 500;
+      animation: subtitleFade 0.6s ease 2.8s both;
     }
 
     @keyframes subtitleFade {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
 
-    /* ==========================================
-       PIN INPUTS (UIVERSE STYLE)
-    ========================================== */
-
-    .pin-container {
-      margin-bottom: 36px;
-      animation: pinFade 0.8s ease 3.2s both;
+    /* PIN Input */
+    .pin-input-container {
+      margin-bottom: 32px;
+      animation: pinFade 0.6s ease 3.0s both;
     }
 
     @keyframes pinFade {
       0% {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(10px);
       }
       100% {
         opacity: 1;
@@ -261,117 +211,69 @@
 
     .pin-inputs {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       justify-content: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .pin-digit {
-      position: relative;
-      width: 68px;
-      height: 76px;
-      background: rgba(255, 255, 255, 0.04);
+      width: 62px;
+      height: 72px;
+      background: rgba(255, 255, 255, 0.03);
       border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      font-family: 'IBM Plex Mono', monospace;
+      border-radius: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', monospace;
       font-size: 32px;
-      font-weight: 700;
+      font-weight: 600;
       color: #FFFFFF;
       text-align: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        0 4px 16px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
-
-    .pin-digit::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
-      padding: 2px;
-      background: linear-gradient(135deg, 
-        rgba(0, 119, 130, 0) 0%, 
-        rgba(0, 119, 130, 0.3) 50%, 
-        rgba(0, 119, 130, 0) 100%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 0.3s;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .pin-digit:focus {
       outline: none;
-      border-color: rgba(0, 119, 130, 0.6);
+      border-color: #FFFFFF;
       background: rgba(255, 255, 255, 0.06);
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 
-        0 8px 24px rgba(0, 119, 130, 0.3),
-        0 0 0 4px rgba(0, 119, 130, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    .pin-digit:focus::before {
-      opacity: 1;
-    }
-
-    /* Filled state */
-    .pin-digit:not(:placeholder-shown) {
-      background: rgba(0, 119, 130, 0.1);
-      border-color: rgba(0, 119, 130, 0.3);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+      transform: scale(1.05);
     }
 
     .error-message {
-      text-align: center;
       color: #FF3D71;
       font-size: 13px;
-      font-weight: 500;
+      margin-top: 16px;
       opacity: 0;
       transition: opacity 0.3s ease;
-      margin-top: 16px;
+      font-family: -apple-system, sans-serif;
+      font-weight: 500;
     }
 
     .error-message.show {
       opacity: 1;
-      animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
     }
 
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
-      20%, 40%, 60%, 80% { transform: translateX(6px); }
-    }
-
-    /* ==========================================
-       BUTTON (UIVERSE STYLE)
-    ========================================== */
-
+    /* Login Button */
     .login-btn {
-      position: relative;
       width: 100%;
-      padding: 18px;
-      background: linear-gradient(135deg, #007782 0%, #00A896 100%);
+      background: #FFFFFF;
+      color: #000000;
       border: none;
-      border-radius: 16px;
-      font-family: 'Inter', sans-serif;
+      border-radius: 14px;
+      padding: 18px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        0 8px 32px rgba(0, 119, 130, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      animation: btnFade 0.8s ease 3.4s both;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
+      animation: btnFade 0.6s ease 3.2s both;
     }
 
     @keyframes btnFade {
       0% {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(10px);
       }
       100% {
         opacity: 1;
@@ -379,35 +281,13 @@
       }
     }
 
-    /* Shine effect */
-    .login-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(45deg, 
-        transparent 30%, 
-        rgba(255, 255, 255, 0.3) 50%, 
-        transparent 70%);
-      transform: translateX(-100%);
-      transition: transform 0.6s;
-    }
-
-    .login-btn:hover::before {
-      transform: translateX(100%);
-    }
-
     .login-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 
-        0 12px 40px rgba(0, 119, 130, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(255, 255, 255, 0.25);
     }
 
     .login-btn:active {
-      transform: translateY(-1px);
-      box-shadow: 
-        0 4px 16px rgba(0, 119, 130, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transform: scale(0.98);
     }
 
     .login-btn:disabled {
@@ -416,42 +296,36 @@
       transform: none;
     }
 
-    .login-btn:disabled:hover {
-      transform: none;
-      box-shadow: 
-        0 8px 32px rgba(0, 119, 130, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    /* Animations */
+    .shake {
+      animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
     }
 
-    /* Success animation */
-    .success-animation {
-      animation: successPulse 0.6s ease;
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+      20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+
+    .success {
+      animation: successPulse 0.4s ease;
     }
 
     @keyframes successPulse {
       0% { transform: scale(1); }
-      25% { transform: scale(1.05); }
-      50% { transform: scale(0.98); }
+      50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
 
-    /* ==========================================
-       RESPONSIVE
-    ========================================== */
-
+    /* Responsive */
     @media (max-width: 400px) {
-      .login-card {
-        padding: 40px 24px;
-        border-radius: 24px;
-      }
-      
       .login-logo {
-        max-width: 240px;
+        max-width: 260px;
       }
       
       .pin-digit {
-        width: 60px;
-        height: 68px;
+        width: 56px;
+        height: 66px;
         font-size: 28px;
       }
     }
@@ -468,7 +342,7 @@
 
   <!-- LOGIN CONTENT -->
   <div id="loginContent">
-    <div class="login-card">
+    <div class="login-container">
       <!-- Logo Lettering -->
       <div class="login-logo">
         <img src="./assets/Driplogo.png" alt="DripDropShop">
@@ -477,14 +351,14 @@
       <p class="subtitle">Acesso Restrito · Admin</p>
 
       <!-- PIN Input -->
-      <div class="pin-container">
+      <div class="pin-input-container">
         <div class="pin-inputs" id="pinInputs">
-          <input type="password" class="pin-digit" maxlength="1" id="pin1" inputmode="numeric" pattern="[0-9]" autocomplete="off" placeholder="">
-          <input type="password" class="pin-digit" maxlength="1" id="pin2" inputmode="numeric" pattern="[0-9]" autocomplete="off" placeholder="">
-          <input type="password" class="pin-digit" maxlength="1" id="pin3" inputmode="numeric" pattern="[0-9]" autocomplete="off" placeholder="">
-          <input type="password" class="pin-digit" maxlength="1" id="pin4" inputmode="numeric" pattern="[0-9]" autocomplete="off" placeholder="">
+          <input type="password" class="pin-digit" maxlength="1" id="pin1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          <input type="password" class="pin-digit" maxlength="1" id="pin2" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          <input type="password" class="pin-digit" maxlength="1" id="pin3" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          <input type="password" class="pin-digit" maxlength="1" id="pin4" inputmode="numeric" pattern="[0-9]" autocomplete="off">
         </div>
-        <p class="error-message" id="errorMessage">❌ Código incorreto</p>
+        <p class="error-message" id="errorMessage">Código incorreto</p>
       </div>
 
       <button class="login-btn" id="loginBtn">Entrar</button>
@@ -496,15 +370,17 @@
     // SPLASH SCREEN LOGIC
     // ==========================================
 
+    // Check if already authenticated - skip splash
     if (localStorage.getItem('dripdrop-auth') === 'true') {
       document.getElementById('splash').style.display = 'none';
       document.getElementById('loginContent').style.opacity = '1';
       document.getElementById('loginContent').style.animation = 'none';
       window.location.href = './pages/stock.html';
     } else {
+      // Auto-focus first PIN after animations
       setTimeout(() => {
         document.getElementById('pin1').focus();
-      }, 3400);
+      }, 3000);
     }
 
     // ==========================================
@@ -522,15 +398,18 @@
     const errorMessage = document.getElementById('errorMessage');
     const pinInputs = document.getElementById('pinInputs');
 
+    // Auto-focus and validation
     inputs.forEach((input, index) => {
       input.addEventListener('input', (e) => {
         const value = e.target.value;
         
+        // Only numbers
         if (!/^\d*$/.test(value)) {
           e.target.value = '';
           return;
         }
 
+        // Move to next input
         if (value && index < 3) {
           inputs[index + 1].focus();
         }
@@ -538,6 +417,7 @@
         checkIfComplete();
       });
 
+      // Backspace navigation
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace' && !input.value && index > 0) {
           inputs[index - 1].focus();
@@ -551,6 +431,7 @@
         }
       });
 
+      // Paste support
       input.addEventListener('paste', (e) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData('text').slice(0, 4);
@@ -586,11 +467,8 @@
       
       setTimeout(() => {
         errorMessage.classList.remove('show');
-      }, 2500);
-      
-      setTimeout(() => {
         pinInputs.classList.remove('shake');
-      }, 500);
+      }, 2000);
       
       clearPIN();
     }
@@ -599,16 +477,13 @@
       const pin = getPIN();
       
       if (pin === CORRECT_PIN) {
-        // Success animation
-        document.querySelector('.login-card').classList.add('success-animation');
-        
-        // Save auth
+        pinInputs.classList.add('success');
         localStorage.setItem('dripdrop-auth', 'true');
         
-        // Redirect
+        // Smooth transition to app
         setTimeout(() => {
           window.location.href = './pages/stock.html';
-        }, 600);
+        }, 400);
       } else {
         showError();
       }
