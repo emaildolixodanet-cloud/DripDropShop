@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0A0A0F">
+  <title>Configurações · DripDrop Admin</title>
+  
+  <!-- Auth Protection (PRIMEIRO!) -->
+  <script src="../scripts/auth-check.js"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Design System -->
+  <link rel="stylesheet" href="../styles/design-system.css">
+  
+  <style>
+    /* Toggle Switch (iOS style) */
+    .toggle-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-lg);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-md);
+      transition: var(--transition-base);
+    }
+    
+    .toggle-container:hover {
+      border-color: var(--border-medium);
+    }
+    
+    .toggle-info {
+      flex: 1;
+    }
+    
+    .toggle-label {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      display: block;
+    }
+    
+    .toggle-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    
+    /* Switch */
+    .switch {
+      position: relative;
+      width: 51px;
+      height: 31px;
+      flex-shrink: 0;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.15);
+      transition: var(--transition-base);
+      border-radius: 31px;
+      border: 2px solid var(--border-subtle);
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 23px;
+      width: 23px;
+      left: 2px;
+      bottom: 2px;
+      background: var(--text-tertiary);
+      transition: var(--transition-base);
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(20px);
+      background: white;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    
+    /* Section Header */
+    .section-header {
+      margin: var(--space-xl) 0 var(--space-md);
+    }
+    
+    .section-header:first-child {
+      margin-top: 0;
+    }
+    
+    .section-title {
+      font-family: var(--font-accent);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-tertiary);
+    }
+    
+    /* Info Card */
+    .info-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-top: var(--space-xl);
+    }
+    
+    .info-card__title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .info-card__content {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .logout-btn {
+      width: 100%;
+      margin-top: var(--space-xl);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <button class="app-header__back" onclick="window.history.back()">
+      ← Voltar
+    </button>
+    <h1 class="app-header__title">CONFIGURAÇÕES</h1>
+    <div class="app-header__actions"></div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container section">
+    
+    <!-- APARÊNCIA -->
+    <div class="section-header">
+      <h2 class="section-title">Aparência</h2>
+    </div>
+    
+    <div class="toggle-container">
+      <div class="toggle-info">
+        <span class="toggle-label">Tema Claro</span>
+        <span class="toggle-description">Ativar modo claro da interface</span>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <!-- DADOS (preparar para futuro) -->
+    <div class="section-header">
+      <h2 class="section-title">Dados</h2>
+    </div>
+    
+    <div class="toggle-container" style="opacity: 0.5; pointer-events: none;">
+      <div class="toggle-info">
+        <span class="toggle-label">Sincronização Automática</span>
+        <span class="toggle-description">Sync com Google Sheets a cada 5min</span>
+      </div>
+      <label class="switch">
+        <input type="checkbox" disabled>
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <!-- NOTIFICAÇÕES (preparar para futuro) -->
+    <div class="section-header">
+      <h2 class="section-title">Notificações</h2>
+    </div>
+    
+    <div class="toggle-container" style="opacity: 0.5; pointer-events: none;">
+      <div class="toggle-info">
+        <span class="toggle-label">Alertas de Stock Baixo</span>
+        <span class="toggle-description">Notificar quando stock &lt; 3 unidades</span>
+      </div>
+      <label class="switch">
+        <input type="checkbox" disabled>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- LOGOUT -->
+    <button class="btn btn--danger logout-btn" onclick="logout()">
+      Terminar Sessão
+    </button>
+    
+    <!-- INFO -->
+    <div class="info-card">
+      <div class="info-card__title">DripDrop Admin v1.0</div>
+      <div class="info-card__content">
+        Sistema de gestão de inventário para DripDropShop.<br>
+        Desenvolvido com 💧 em 2026.
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TAB BAR -->
+  <nav class="tab-bar">
+    <a href="./stock.html" class="tab-bar__item">
+      <span class="tab-bar__icon">📦</span>
+      <span>Stock</span>
+    </a>
+    <a href="./site.html" class="tab-bar__item">
+      <span class="tab-bar__icon">🌐</span>
+      <span>Site</span>
+    </a>
+    <a href="./visao.html" class="tab-bar__item">
+      <span class="tab-bar__icon">📊</span>
+      <span>Visão</span>
+    </a>
+    <a href="./campanhas.html" class="tab-bar__item">
+      <span class="tab-bar__icon">🎯</span>
+      <span>Campanhas</span>
+    </a>
+    <a href="./settings.html" class="tab-bar__item active">
+      <span class="tab-bar__icon">⚙️</span>
+      <span>Config</span>
+    </a>
+  </nav>
+
+  <script src="../scripts/settings.js"></script>
+  
+  <!-- Theme Init -->
+  <script>
+    const savedTheme = localStorage.getItem('dripdrop-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>
