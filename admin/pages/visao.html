@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0A0A0F">
+  <title>Visão · DripDrop Admin</title>
+
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo-180.png">
+  <script src="../scripts/auth-check.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/design-system.css">
+
+  <style>
+    .sub-tabs { display:flex;gap:4px;background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:4px;margin-bottom:var(--space-lg); }
+    .sub-tab { flex:1;padding:10px 16px;border:none;border-radius:var(--radius-md);background:transparent;color:var(--text-tertiary);font-family:var(--font-accent);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;transition:none;text-align:center; }
+    .sub-tab.active { background:var(--primary);color:#fff;box-shadow:0 2px 8px var(--primary-glow); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* Search */
+    .search-bar { position:relative;margin-bottom:var(--space-md); }
+    .search-bar input { width:100%;padding:12px 16px 12px 40px;background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);color:var(--text-primary);font-size:15px;font-family:var(--font-body);transition:none; }
+    .search-bar input:focus { outline:none;border-color:var(--primary); }
+    .search-bar input::placeholder { color:var(--text-tertiary); }
+    .search-bar::before { content:'🔍';position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px; }
+
+    /* Filter chips */
+    .filter-row { display:flex;gap:8px;overflow-x:auto;margin-bottom:var(--space-lg);padding-bottom:4px;-webkit-overflow-scrolling:touch; }
+    .filter-row::-webkit-scrollbar { display:none; }
+    .chip { padding:6px 14px;border-radius:20px;border:1px solid var(--border-subtle);background:transparent;color:var(--text-secondary);font-family:var(--font-accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;white-space:nowrap;transition:none; }
+    .chip.active { background:var(--primary);border-color:var(--primary);color:#fff; }
+
+    /* ===== GROUP CARD ===== */
+    .grp { border-radius:var(--radius-lg);border:1px solid var(--border-subtle);overflow:hidden;margin-bottom:var(--space-md);background:var(--bg-surface); }
+
+    .grp__head { display:flex;align-items:center;gap:10px;padding:14px var(--space-md);background:var(--bg-elevated);cursor:pointer;-webkit-user-select:none;user-select:none; }
+    .grp__arrow { font-size:12px;color:var(--text-tertiary);width:16px;text-align:center; }
+    .grp__name { font-family:var(--font-display);font-size:14px;font-weight:700;flex:1;min-width:0; }
+    .grp__badge { font-family:var(--font-display);font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text-tertiary); }
+    .grp__actions { display:flex;gap:4px; }
+    .grp__btn { width:30px;height:30px;border:none;border-radius:var(--radius-sm);background:transparent;color:var(--text-tertiary);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+    .grp__btn:active { background:rgba(255,255,255,0.1); }
+
+    .grp__body { padding:0 var(--space-sm) var(--space-sm); }
+    .grp__body.collapsed { display:none; }
+
+    .grp__summary { display:flex;gap:var(--space-sm);padding:10px var(--space-md) 6px;flex-wrap:wrap; }
+    .grp__stat { font-family:var(--font-display);font-size:12px;color:var(--text-secondary); }
+    .grp__stat strong { color:var(--text-primary); }
+
+    /* ===== ITEM ROW ===== */
+    .item-row { display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:var(--radius-md);margin-bottom:2px;background:var(--bg-elevated); }
+    .item-row__info { flex:1;min-width:0; }
+    .item-row__title { font-family:var(--font-display);font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+    .item-row__meta { font-size:11px;color:var(--text-secondary);margin-top:1px; }
+    .item-row__qty { font-family:var(--font-display);font-size:18px;font-weight:700;min-width:28px;text-align:center; }
+    .item-row__actions { display:flex;gap:4px;align-items:center; }
+
+    /* Qty stepper inside group */
+    .qty-stepper { display:flex;align-items:center;gap:2px; }
+    .qty-stepper button { width:28px;height:28px;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+    .qty-stepper .minus { background:rgba(255,82,82,0.15);color:var(--critical); }
+    .qty-stepper .plus { background:rgba(0,230,118,0.15);color:var(--success); }
+
+    /* Return button */
+    .return-btn { padding:5px 10px;border:none;border-radius:var(--radius-sm);background:rgba(255,82,82,0.1);border:1px solid rgba(255,82,82,0.2);color:var(--critical);font-family:var(--font-accent);font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.3px; }
+
+    /* Assign button on main list items */
+    .assign-btn { padding:7px 12px;border:none;border-radius:var(--radius-md);background:rgba(0,119,130,0.15);border:1px solid rgba(0,119,130,0.3);color:var(--primary-light);font-family:var(--font-accent);font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap; }
+
+    .sell-btn { padding:7px 12px;border:none;border-radius:var(--radius-md);background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.3);color:var(--success);font-family:var(--font-accent);font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap; }
+
+    .section-label { font-family:var(--font-accent);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:var(--space-sm);margin-top:var(--space-md); }
+
+    /* Analytics */
+    .stat-grid { display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);margin-bottom:var(--space-lg); }
+    .stat-card { background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-lg);text-align:center; }
+    .stat-card__label { font-family:var(--font-accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-tertiary);margin-bottom:8px; }
+    .stat-card__value { font-family:var(--font-display);font-size:24px;font-weight:700; }
+    .stat-card__value.positive { color:var(--success); }
+    .stat-card__value.negative { color:var(--critical); }
+    .stat-card__value.neutral { color:var(--primary-light); }
+    .sale-row { display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-subtle);font-size:14px; }
+    .sale-row:last-child { border-bottom:none; }
+    .sale-date { font-size:12px;color:var(--text-tertiary); }
+    .sale-amount { font-family:var(--font-display);font-weight:700;color:var(--success); }
+    .sale-product { font-weight:600; }
+    .sale-profit { font-size:12px; }
+    .sale-profit.positive { color:var(--success); }
+    .sale-profit.negative { color:var(--critical); }
+
+    /* Assign modal qty selector */
+    .assign-qty-row { display:flex;align-items:center;justify-content:center;gap:16px;padding:var(--space-lg) 0; }
+    .assign-qty-row button { width:44px;height:44px;border-radius:50%;border:2px solid var(--border-subtle);background:var(--bg-elevated);color:var(--text-primary);font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+    .assign-qty-row button:active { background:var(--primary);border-color:var(--primary);color:#fff; }
+    .assign-qty-value { font-family:var(--font-display);font-size:36px;font-weight:700;min-width:60px;text-align:center; }
+
+    /* Group picker */
+    .group-pick-btn { width:100%;padding:14px var(--space-md);margin-bottom:8px;border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--bg-elevated);color:var(--text-primary);font-family:var(--font-display);font-size:14px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px; }
+    .group-pick-btn:active { border-color:var(--primary);background:rgba(0,119,130,0.08); }
+    .group-pick-btn__count { font-family:var(--font-accent);font-size:11px;color:var(--text-tertiary);margin-left:auto; }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <button class="app-header__back" onclick="window.history.back()">← Voltar</button>
+    <h1 class="app-header__title">VISÃO</h1>
+    <div class="app-header__actions"></div>
+  </header>
+
+  <main class="container section">
+
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-tab="operacoes">Operações</button>
+      <button class="sub-tab" data-tab="analytics">Analytics</button>
+    </div>
+
+    <!-- ====== OPERAÇÕES ====== -->
+    <div class="tab-panel active" id="panel-operacoes">
+
+      <div class="card card--glass mb-lg">
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-tertiary text-sm text-accent">EM ARMAZÉM</div>
+            <div class="text-display" style="font-size:28px" id="opUnits">0</div>
+          </div>
+          <div class="text-center">
+            <div class="text-tertiary text-sm text-accent">ATRIBUÍDOS</div>
+            <div class="text-display" style="font-size:28px;color:var(--primary-light)" id="opAssigned">0</div>
+          </div>
+          <div class="text-right">
+            <div class="text-tertiary text-sm text-accent">VENDAS HOJE</div>
+            <div class="text-display" style="font-size:28px;color:var(--success)" id="opSalesToday">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Pesquisar artigo...">
+      </div>
+
+      <div class="filter-row" id="filterRow"></div>
+
+      <div style="margin-bottom:var(--space-md)">
+        <button class="btn btn--secondary" style="width:100%" id="addGroupBtn">➕ Novo Grupo</button>
+      </div>
+
+      <div id="opList"></div>
+
+      <div class="empty-state" id="opEmpty" style="display:none">
+        <div class="empty-state__icon">📊</div>
+        <h3 class="empty-state__title">Sem stock</h3>
+        <p class="empty-state__description">Adiciona produtos no Stock primeiro.</p>
+      </div>
+    </div>
+
+    <!-- ====== ANALYTICS ====== -->
+    <div class="tab-panel" id="panel-analytics">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-card__label">Investimento</div><div class="stat-card__value neutral" id="anInvestment">0€</div></div>
+        <div class="stat-card"><div class="stat-card__label">Receita</div><div class="stat-card__value positive" id="anRevenue">0€</div></div>
+        <div class="stat-card"><div class="stat-card__label">Lucro</div><div class="stat-card__value" id="anProfit">0€</div></div>
+        <div class="stat-card"><div class="stat-card__label">Margem</div><div class="stat-card__value" id="anMargin">0%</div></div>
+      </div>
+      <div class="stat-grid" style="grid-template-columns:1fr">
+        <div class="stat-card"><div class="stat-card__label">Total vendas</div><div class="text-display" style="font-size:32px" id="anSalesCount">0</div></div>
+      </div>
+      <div class="section-label">Histórico de Vendas</div>
+      <div class="card" id="salesHistory">
+        <div class="empty-state" style="padding:var(--space-lg)"><div style="font-size:32px;opacity:0.5;margin-bottom:8px">📋</div><p class="text-sm text-secondary">Nenhuma venda registada.</p></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ASSIGN MODAL: choose qty + group -->
+  <div class="modal-backdrop" id="assignModal">
+    <div class="modal">
+      <div class="modal__handle"></div>
+      <div class="modal__header"><h2 class="modal__title">Atribuir a grupo</h2></div>
+      <div id="assignItemInfo"></div>
+
+      <div class="section-label" style="margin-top:var(--space-md);text-align:center">QUANTIDADE</div>
+      <div class="assign-qty-row">
+        <button id="aqMinus">−</button>
+        <div class="assign-qty-value" id="aqValue">1</div>
+        <button id="aqPlus">+</button>
+      </div>
+
+      <div class="section-label">GRUPO DE DESTINO</div>
+      <div id="assignGroupList"></div>
+
+      <div class="modal__actions" style="margin-top:var(--space-md)">
+        <button class="btn btn--secondary" id="assignCancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELL MODAL -->
+  <div class="modal-backdrop" id="sellModal">
+    <div class="modal">
+      <div class="modal__handle"></div>
+      <div class="modal__header"><h2 class="modal__title">Registar Venda</h2></div>
+      <div id="sellInfo" style="margin-bottom:var(--space-md)"></div>
+      <div class="input-group">
+        <label class="input-label" for="sm_qty">Quantidade</label>
+        <input class="input" type="number" id="sm_qty" value="1" min="1"/>
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="sm_price">Valor de venda (€)</label>
+        <input class="input" type="number" id="sm_price" placeholder="0.00" step="0.01" min="0"/>
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn--secondary" id="sellCancel">Cancelar</button>
+        <button class="btn btn--primary" id="sellConfirm">Confirmar Venda</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <nav class="tab-bar">
+    <a href="./stock.html" class="tab-bar__item"><span class="tab-bar__icon">📦</span><span>Stock</span></a>
+    <a href="./site.html" class="tab-bar__item"><span class="tab-bar__icon">🌐</span><span>Site</span></a>
+    <a href="./visao.html" class="tab-bar__item active"><span class="tab-bar__icon">📊</span><span>Visão</span></a>
+    <a href="./extra.html" class="tab-bar__item"><span class="tab-bar__icon">🔮</span><span>Extra</span></a>
+    <a href="./settings.html" class="tab-bar__item"><span class="tab-bar__icon">⚙️</span><span>Config</span></a>
+  </nav>
+
+  <script>
+    // ==========================================
+    // VISÃO v2 — Groups as "bags" with qty
+    // ==========================================
+
+    // --- DATA ---
+    // Stock source (will sync from Sheets later)
+    let stockItems = [
+      { id:"RL-HOODIE", color:"Azul", size:"M", stock:5 },
+      { id:"RL-HOODIE", color:"Azul", size:"L", stock:2 },
+      { id:"RL-HOODIE", color:"Verde", size:"M", stock:1 },
+      { id:"CARH-JACKET", color:"Preto", size:"L", stock:3 }
+    ];
+    let costPrices = { "RL-HOODIE":18, "CARH-JACKET":25 };
+
+    // Sales log
+    let sales = JSON.parse(localStorage.getItem('dd-sales') || '[]');
+
+    /*
+      Groups v2 structure:
+      [
+        {
+          name: "João - Feira Porto",
+          collapsed: false,
+          items: [
+            { stockIdx: 0, qty: 2 },   // 2 units of stockItems[0]
+            { stockIdx: 3, qty: 1 }
+          ]
+        }
+      ]
+      The original stockItems[x].stock stays the same — groups are "allocations".
+      Available = stock - sum(all group allocations for that item)
+    */
+    let groups = JSON.parse(localStorage.getItem('dd-groups-v2') || '[]');
+
+    let searchQuery = '';
+    let activeFilter = 'all';
+
+    function saveData() {
+      localStorage.setItem('dd-sales', JSON.stringify(sales));
+      localStorage.setItem('dd-groups-v2', JSON.stringify(groups));
+    }
+
+    // How many units of stockItems[idx] are allocated across all groups
+    function totalAllocated(idx) {
+      let total = 0;
+      groups.forEach(g => {
+        g.items.forEach(gi => { if (gi.stockIdx === idx) total += gi.qty; });
+      });
+      return total;
+    }
+
+    // Available = stock - allocated
+    function available(idx) {
+      return Math.max(0, stockItems[idx].stock - totalAllocated(idx));
+    }
+
+    // Total allocated across everything
+    function totalAllGroupsAllocated() {
+      return groups.reduce((s, g) => s + g.items.reduce((s2, gi) => s2 + gi.qty, 0), 0);
+    }
+
+    // --- SUB TABS ---
+    document.querySelectorAll('.sub-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'analytics') renderAnalytics();
+      });
+    });
+
+    // --- SEARCH ---
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      renderAll();
+    });
+
+    // --- FILTERS ---
+    function renderFilters() {
+      const row = document.getElementById('filterRow');
+      row.innerHTML = '';
+      const ids = [...new Set(stockItems.map(i => i.id))].sort();
+      const filters = ['all', ...ids];
+      filters.forEach(f => {
+        const chip = document.createElement('button');
+        chip.className = `chip ${activeFilter === f ? 'active' : ''}`;
+        chip.textContent = f === 'all' ? 'Todos' : f;
+        chip.addEventListener('click', () => { activeFilter = f; renderAll(); });
+        row.appendChild(chip);
+      });
+    }
+
+    function matchesFilter(idx) {
+      const item = stockItems[idx];
+      if (searchQuery && !(item.id + item.color + item.size).toLowerCase().includes(searchQuery)) return false;
+      if (activeFilter !== 'all' && item.id !== activeFilter) return false;
+      return true;
+    }
+
+    // --- RENDER ALL ---
+    function renderAll() {
+      renderFilters();
+      renderGroups();
+      renderUnassigned();
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const totalStock = stockItems.reduce((s, i) => s + i.stock, 0);
+      document.getElementById('opUnits').textContent = totalStock;
+      document.getElementById('opAssigned').textContent = totalAllGroupsAllocated();
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('opSalesToday').textContent = sales.filter(s => s.date === today).length;
+    }
+
+    // --- RENDER GROUPS ---
+    function renderGroups() {
+      // Remove existing group sections
+      document.querySelectorAll('.grp').forEach(el => el.remove());
+      const list = document.getElementById('opList');
+
+      groups.forEach((group, gi) => {
+        // Filter group items
+        const visibleItems = group.items.filter(gi => matchesFilter(gi.stockIdx));
+        if (visibleItems.length === 0 && searchQuery) return;
+
+        const grp = document.createElement('div');
+        grp.className = 'grp';
+        grp.dataset.gi = gi;
+
+        const totalQty = group.items.reduce((s, gi) => s + gi.qty, 0);
+
+        // Header
+        grp.innerHTML = `
+          <div class="grp__head" data-action="toggle-group" data-gi="${gi}">
+            <span class="grp__arrow">${group.collapsed ? '▶' : '▼'}</span>
+            <span class="grp__name">📁 ${group.name}</span>
+            <span class="grp__badge">${totalQty} un.</span>
+            <div class="grp__actions">
+              <button class="grp__btn" data-action="rename-group" data-gi="${gi}">✏️</button>
+              <button class="grp__btn" data-action="delete-group" data-gi="${gi}">🗑</button>
+            </div>
+          </div>
+        `;
+
+        // Body
+        const body = document.createElement('div');
+        body.className = `grp__body ${group.collapsed ? 'collapsed' : ''}`;
+
+        // Summary row
+        if (group.items.length > 0) {
+          const summary = document.createElement('div');
+          summary.className = 'grp__summary';
+          const uniqueProducts = [...new Set(group.items.map(gi => stockItems[gi.stockIdx].id))].length;
+          summary.innerHTML = `
+            <span class="grp__stat"><strong>${totalQty}</strong> unidades</span>
+            <span class="grp__stat">·</span>
+            <span class="grp__stat"><strong>${uniqueProducts}</strong> produto${uniqueProducts !== 1 ? 's' : ''}</span>
+          `;
+          body.appendChild(summary);
+        }
+
+        // Items
+        (searchQuery ? visibleItems : group.items).forEach((gItem, itemIdx) => {
+          const si = stockItems[gItem.stockIdx];
+          const row = document.createElement('div');
+          row.className = 'item-row';
+          row.innerHTML = `
+            <div class="item-row__info">
+              <div class="item-row__title">${si.id}</div>
+              <div class="item-row__meta">${si.color} · ${si.size}</div>
+            </div>
+            <div class="qty-stepper">
+              <button class="minus" data-action="group-qty" data-gi="${gi}" data-si="${gItem.stockIdx}" data-delta="-1">−</button>
+              <span class="item-row__qty">${gItem.qty}</span>
+              <button class="plus" data-action="group-qty" data-gi="${gi}" data-si="${gItem.stockIdx}" data-delta="1">+</button>
+            </div>
+            <button class="return-btn" data-action="return-item" data-gi="${gi}" data-si="${gItem.stockIdx}">Devolver</button>
+          `;
+          body.appendChild(row);
+        });
+
+        grp.appendChild(body);
+        list.insertBefore(grp, list.querySelector('.section-label'));
+      });
+    }
+
+    // --- RENDER UNASSIGNED (main stock list) ---
+    function renderUnassigned() {
+      // Remove old items
+      document.querySelectorAll('.unassigned-item').forEach(el => el.remove());
+      const existingLabel = document.getElementById('unassignedLabel');
+      if (existingLabel) existingLabel.remove();
+
+      const list = document.getElementById('opList');
+
+      // Build visible items
+      const visibleItems = stockItems.map((item, idx) => ({ item, idx }))
+        .filter(({ idx }) => matchesFilter(idx));
+
+      if (visibleItems.length === 0 && stockItems.length === 0) {
+        document.getElementById('opEmpty').style.display = 'block';
+        return;
+      }
+      document.getElementById('opEmpty').style.display = 'none';
+
+      if (groups.length > 0) {
+        const label = document.createElement('div');
+        label.className = 'section-label';
+        label.id = 'unassignedLabel';
+        label.textContent = 'Stock disponível';
+        list.appendChild(label);
+      }
+
+      visibleItems.forEach(({ item, idx }) => {
+        const avail = available(idx);
+        const alloc = totalAllocated(idx);
+
+        let stockColor = 'var(--text-primary)';
+        if (item.stock === 0) stockColor = 'var(--critical)';
+        else if (avail === 0) stockColor = 'var(--text-tertiary)';
+        else if (avail <= 3) stockColor = 'var(--warning)';
+
+        const row = document.createElement('div');
+        row.className = 'item-row unassigned-item';
+        row.innerHTML = `
+          <div class="item-row__info">
+            <div class="item-row__title">${item.id}</div>
+            <div class="item-row__meta">${item.color} · ${item.size}${alloc > 0 ? ` · <span style="color:var(--primary-light)">${alloc} atribuído${alloc > 1 ? 's' : ''}</span>` : ''}</div>
+          </div>
+          <div class="item-row__qty" style="color:${stockColor}">${avail}<span style="font-size:11px;color:var(--text-tertiary)">/${item.stock}</span></div>
+          <div class="item-row__actions">
+            ${avail > 0 ? `<button class="assign-btn" data-action="assign" data-idx="${idx}">📁 Atribuir</button>` : ''}
+            ${item.stock > 0 ? `<button class="sell-btn" data-action="sell" data-idx="${idx}">💰</button>` : ''}
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    // --- EVENT DELEGATION ---
+    document.getElementById('opList').addEventListener('click', (e) => {
+      const el = e.target.closest('[data-action]');
+      if (!el) return;
+      const action = el.dataset.action;
+
+      // Toggle group collapse
+      if (action === 'toggle-group') {
+        const gi = Number(el.dataset.gi);
+        groups[gi].collapsed = !groups[gi].collapsed;
+        saveData(); renderAll();
+        return;
+      }
+
+      // Rename group
+      if (action === 'rename-group') {
+        e.stopPropagation();
+        const gi = Number(el.dataset.gi);
+        const newName = prompt('Nome do grupo:', groups[gi].name);
+        if (newName && newName.trim()) {
+          groups[gi].name = newName.trim();
+          saveData(); renderAll();
+          showToast('Grupo renomeado', 'success');
+        }
+        return;
+      }
+
+      // Delete group
+      if (action === 'delete-group') {
+        e.stopPropagation();
+        const gi = Number(el.dataset.gi);
+        if (confirm(`Eliminar "${groups[gi].name}"?\nAs unidades voltam ao stock disponível.`)) {
+          groups.splice(gi, 1);
+          saveData(); renderAll();
+          showToast('Grupo eliminado', 'success');
+        }
+        return;
+      }
+
+      // Group qty +/-
+      if (action === 'group-qty') {
+        const gi = Number(el.dataset.gi);
+        const si = Number(el.dataset.si);
+        const delta = Number(el.dataset.delta);
+        const gItem = groups[gi].items.find(i => i.stockIdx === si);
+        if (!gItem) return;
+
+        if (delta > 0) {
+          // Check available
+          if (available(si) <= 0) { showToast('Sem stock disponível', 'warning'); return; }
+          gItem.qty += 1;
+        } else {
+          gItem.qty -= 1;
+          if (gItem.qty <= 0) {
+            groups[gi].items = groups[gi].items.filter(i => i.stockIdx !== si);
+          }
+        }
+        saveData(); renderAll();
+        return;
+      }
+
+      // Return all from group
+      if (action === 'return-item') {
+        const gi = Number(el.dataset.gi);
+        const si = Number(el.dataset.si);
+        groups[gi].items = groups[gi].items.filter(i => i.stockIdx !== si);
+        saveData(); renderAll();
+        showToast('Devolvido ao stock', 'success');
+        return;
+      }
+
+      // Open assign modal
+      if (action === 'assign') {
+        openAssignModal(Number(el.dataset.idx));
+        return;
+      }
+
+      // Open sell modal
+      if (action === 'sell') {
+        openSellModal(Number(el.dataset.idx));
+        return;
+      }
+    });
+
+    // --- NEW GROUP ---
+    document.getElementById('addGroupBtn').addEventListener('click', () => {
+      const name = prompt('Nome do grupo:');
+      if (name && name.trim()) {
+        groups.push({ name: name.trim(), collapsed: false, items: [] });
+        saveData(); renderAll();
+        showToast('Grupo criado', 'success');
+      }
+    });
+
+    // --- ASSIGN MODAL ---
+    const assignModal = document.getElementById('assignModal');
+    let assignIdx = null;
+    let assignQty = 1;
+
+    function openAssignModal(idx) {
+      assignIdx = idx;
+      const item = stockItems[idx];
+      const avail = available(idx);
+      assignQty = 1;
+
+      document.getElementById('assignItemInfo').innerHTML = `
+        <div class="card card--glass" style="padding:var(--space-md)">
+          <div class="text-base font-semibold">${item.id}</div>
+          <div class="text-sm text-secondary">${item.color} · ${item.size} · Disponível: ${avail}</div>
+        </div>
+      `;
+      document.getElementById('aqValue').textContent = assignQty;
+
+      // Render group buttons
+      const groupList = document.getElementById('assignGroupList');
+      groupList.innerHTML = '';
+
+      if (groups.length === 0) {
+        groupList.innerHTML = '<p class="text-sm text-secondary" style="text-align:center;padding:var(--space-md)">Cria um grupo primeiro.</p>';
+      } else {
+        groups.forEach((g, gi) => {
+          const existing = g.items.find(i => i.stockIdx === idx);
+          const btn = document.createElement('button');
+          btn.className = 'group-pick-btn';
+          btn.innerHTML = `
+            <span>📁</span>
+            <span>${g.name}</span>
+            ${existing ? `<span class="group-pick-btn__count">${existing.qty} já atribuído${existing.qty > 1 ? 's' : ''}</span>` : ''}
+          `;
+          btn.addEventListener('click', () => {
+            const avail = available(assignIdx);
+            if (assignQty > avail) { showToast('Stock insuficiente', 'warning'); return; }
+
+            const existing = groups[gi].items.find(i => i.stockIdx === assignIdx);
+            if (existing) {
+              existing.qty += assignQty;
+            } else {
+              groups[gi].items.push({ stockIdx: assignIdx, qty: assignQty });
+            }
+            groups[gi].collapsed = false;
+            saveData();
+            assignModal.classList.remove('active');
+            document.body.style.overflow = '';
+            renderAll();
+            showToast(`${assignQty} un. → ${g.name}`, 'success');
+          });
+          groupList.appendChild(btn);
+        });
+      }
+
+      assignModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.getElementById('aqMinus').addEventListener('click', () => {
+      if (assignQty > 1) { assignQty--; document.getElementById('aqValue').textContent = assignQty; }
+    });
+    document.getElementById('aqPlus').addEventListener('click', () => {
+      const avail = available(assignIdx);
+      if (assignQty < avail) { assignQty++; document.getElementById('aqValue').textContent = assignQty; }
+    });
+    document.getElementById('assignCancel').addEventListener('click', () => {
+      assignModal.classList.remove('active'); document.body.style.overflow = '';
+    });
+    assignModal.addEventListener('click', (e) => {
+      if (e.target === assignModal) { assignModal.classList.remove('active'); document.body.style.overflow = ''; }
+    });
+
+    // --- SELL MODAL ---
+    let sellingIndex = null;
+    const sellModal = document.getElementById('sellModal');
+
+    function openSellModal(idx) {
+      sellingIndex = idx;
+      const item = stockItems[idx];
+      document.getElementById('sellInfo').innerHTML = `
+        <div class="card card--glass" style="padding:var(--space-md)">
+          <div class="text-base font-semibold">${item.id}</div>
+          <div class="text-sm text-secondary">${item.color} · ${item.size} · Stock: ${item.stock}</div>
+        </div>
+      `;
+      document.getElementById('sm_qty').value = 1;
+      document.getElementById('sm_qty').max = item.stock;
+      document.getElementById('sm_price').value = '';
+      sellModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.getElementById('sellCancel').onclick = () => { sellModal.classList.remove('active'); document.body.style.overflow = ''; };
+    sellModal.addEventListener('click', (e) => { if (e.target === sellModal) { sellModal.classList.remove('active'); document.body.style.overflow = ''; } });
+
+    document.getElementById('sellConfirm').onclick = () => {
+      const item = stockItems[sellingIndex];
+      const qty = Number(document.getElementById('sm_qty').value) || 1;
+      const sellValue = Number(document.getElementById('sm_price').value);
+
+      if (!sellValue || sellValue <= 0) { alert('Introduz o valor da venda.'); return; }
+      if (qty > item.stock) { alert('Quantidade superior ao stock.'); return; }
+
+      const cost = costPrices[item.id] || 0;
+      sales.push({
+        date: new Date().toISOString().split('T')[0],
+        timestamp: Date.now(),
+        productId: item.id, color: item.color, size: item.size,
+        qty, sellValue, costValue: cost * qty,
+        profit: sellValue - (cost * qty)
+      });
+
+      item.stock -= qty;
+
+      // Also reduce allocations if stock went below allocated
+      let remaining = item.stock;
+      groups.forEach(g => {
+        const gItem = g.items.find(i => i.stockIdx === sellingIndex);
+        if (gItem) {
+          if (gItem.qty > remaining) {
+            gItem.qty = remaining;
+          }
+          remaining -= gItem.qty;
+          if (gItem.qty <= 0) g.items = g.items.filter(i => i.stockIdx !== sellingIndex);
+        }
+      });
+
+      saveData();
+      sellModal.classList.remove('active');
+      document.body.style.overflow = '';
+      renderAll();
+      showToast(`Venda: ${sellValue.toFixed(2)}€`, 'success');
+    };
+
+    // --- ANALYTICS ---
+    function renderAnalytics() {
+      const totalInvestment = stockItems.reduce((s, i) => s + (i.stock * (costPrices[i.id] || 0)), 0);
+      const totalRevenue = sales.reduce((s, sale) => s + sale.sellValue, 0);
+      const totalCostSold = sales.reduce((s, sale) => s + sale.costValue, 0);
+      const totalProfit = totalRevenue - totalCostSold;
+      const margin = totalRevenue > 0 ? (totalProfit / totalRevenue * 100) : 0;
+
+      document.getElementById('anInvestment').textContent = totalInvestment.toFixed(2) + '€';
+      document.getElementById('anRevenue').textContent = totalRevenue.toFixed(2) + '€';
+      const profitEl = document.getElementById('anProfit');
+      profitEl.textContent = totalProfit.toFixed(2) + '€';
+      profitEl.className = `stat-card__value ${totalProfit >= 0 ? 'positive' : 'negative'}`;
+      const marginEl = document.getElementById('anMargin');
+      marginEl.textContent = margin.toFixed(1) + '%';
+      marginEl.className = `stat-card__value ${margin >= 0 ? 'positive' : 'negative'}`;
+      document.getElementById('anSalesCount').textContent = sales.length;
+
+      const hc = document.getElementById('salesHistory');
+      hc.innerHTML = '';
+      if (sales.length === 0) {
+        hc.innerHTML = '<div class="empty-state" style="padding:var(--space-lg)"><div style="font-size:32px;opacity:0.5;margin-bottom:8px">📋</div><p class="text-sm text-secondary">Nenhuma venda registada.</p></div>';
+        return;
+      }
+      [...sales].reverse().forEach(sale => {
+        const row = document.createElement('div');
+        row.className = 'sale-row';
+        const pc = sale.profit >= 0 ? 'positive' : 'negative';
+        const ps = sale.profit >= 0 ? '+' : '';
+        row.innerHTML = `
+          <div><div class="sale-product">${sale.productId}</div><div class="sale-date">${sale.date} · ${sale.color} · ${sale.size} · x${sale.qty}</div></div>
+          <div style="text-align:right"><div class="sale-amount">${sale.sellValue.toFixed(2)}€</div><div class="sale-profit ${pc}">${ps}${sale.profit.toFixed(2)}€</div></div>
+        `;
+        hc.appendChild(row);
+      });
+    }
+
+    // --- TOAST ---
+    function showToast(message, type = "success") {
+      const existing = document.querySelector('.toast-notification');
+      if (existing) existing.remove();
+      const toast = document.createElement("div");
+      toast.className = `toast-notification badge badge--${type}`;
+      toast.textContent = message;
+      Object.assign(toast.style, { position:"fixed", top:"calc(70px + env(safe-area-inset-top, 0px))", left:"50%", transform:"translateX(-50%)", zIndex:"1000", padding:"12px 24px", fontSize:"14px", boxShadow:"var(--shadow-lg)", animation:"slideDown 0.3s ease-out" });
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = "0"; toast.style.transition = "opacity 0.3s"; setTimeout(() => toast.remove(), 300); }, 2000);
+    }
+
+    // --- INIT ---
+    renderAll();
+  </script>
+
+  <script>
+    const savedTheme = localStorage.getItem('dripdrop-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>

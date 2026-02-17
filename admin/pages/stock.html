@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0A0A0F">
+  <title>Inventário · DripDrop Admin</title>
+  
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo-180.png">
+  
+  <script src="../scripts/auth-check.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../styles/design-system.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <button class="app-header__back" onclick="logout()">← Sair</button>
+    <h1 class="app-header__title">INVENTÁRIO</h1>
+    <div class="app-header__actions">
+      <button class="btn--icon" id="syncBtn" title="Sincronizar">🔄</button>
+    </div>
+  </header>
+
+  <main class="container section">
+    
+    <div class="card card--glass mb-lg">
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="text-tertiary text-sm text-accent">INVESTIMENTO</div>
+          <div class="text-display cost-value" style="font-size:32px;color:var(--success)" id="totalValue">0€</div>
+        </div>
+        <div class="text-right">
+          <div class="text-tertiary text-sm text-accent">UNIDADES</div>
+          <div class="text-display" style="font-size:32px" id="totalUnits">0</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:12px">
+        <button id="toggleCosts" style="background:none;border:none;color:var(--text-tertiary);font-size:12px;font-family:var(--font-accent);letter-spacing:0.5px;cursor:pointer;padding:4px 12px">
+          👁 OCULTAR CUSTOS
+        </button>
+      </div>
+    </div>
+
+    <button class="btn btn--primary mb-lg" id="addBtn" style="width:100%">➕ Adicionar Stock</button>
+
+    <div id="stockList"></div>
+
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-state__icon">📦</div>
+      <h3 class="empty-state__title">Nenhum item em stock</h3>
+      <p class="empty-state__description">Adiciona o teu primeiro artigo para começar a gerir o inventário.</p>
+      <button class="btn btn--primary" onclick="document.getElementById('addBtn').click()">Adicionar Stock</button>
+    </div>
+
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <div class="modal__handle"></div>
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalTitle">Novo artigo</h2>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="m_product">Product ID</label>
+        <select class="select" id="m_product">
+          <option value="" disabled selected>Selecionar produto...</option>
+        </select>
+        <input class="input mt-sm" id="m_product_new" placeholder="Ex: RL-HOODIE" style="display:none"/>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="m_color">Cor</label>
+        <select class="select" id="m_color">
+          <option value="" disabled selected>Selecionar cor...</option>
+        </select>
+        <input class="input mt-sm" id="m_color_new" placeholder="Ex: Azul" style="display:none"/>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="m_size">Tamanho</label>
+        <select class="select" id="m_size">
+          <option value="" disabled selected>Selecionar tamanho...</option>
+          <option value="XS">XS</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+          <option value="XXL">XXL</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="m_stock">Stock inicial</label>
+        <input class="input" type="number" id="m_stock" placeholder="0" min="0"/>
+      </div>
+
+      <div class="input-group" id="costGroup">
+        <label class="input-label" for="m_cost">Preço de Custo (€)</label>
+        <input class="input" type="number" id="m_cost" placeholder="0.00" step="0.01" min="0"/>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn--secondary" id="cancel">Cancelar</button>
+        <button class="btn btn--primary" id="save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB BAR (4 tabs) -->
+  <nav class="tab-bar">
+    <a href="./stock.html" class="tab-bar__item active">
+      <span class="tab-bar__icon">📦</span>
+      <span>Stock</span>
+    </a>
+    <a href="./site.html" class="tab-bar__item">
+      <span class="tab-bar__icon">🌐</span>
+      <span>Site</span>
+    </a>
+    <a href="./visao.html" class="tab-bar__item">
+      <span class="tab-bar__icon">📊</span>
+      <span>Visão</span>
+    </a>
+    <a href="./extra.html" class="tab-bar__item">
+      <span class="tab-bar__icon">🔮</span>
+      <span>Extra</span>
+    </a>
+    <a href="./settings.html" class="tab-bar__item">
+      <span class="tab-bar__icon">⚙️</span>
+      <span>Config</span>
+    </a>
+  </nav>
+
+  <script src="../scripts/stock.js"></script>
+  <script>
+    const savedTheme = localStorage.getItem('dripdrop-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>
