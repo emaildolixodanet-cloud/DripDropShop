@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0A0A0F">
+  <title>Extra · DripDrop Admin</title>
+  
+  <link rel="manifest" href="../manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/logo-180.png">
+  
+  <script src="../scripts/auth-check.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../styles/design-system.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <button class="app-header__back" onclick="window.history.back()">← Voltar</button>
+    <h1 class="app-header__title">EXTRA</h1>
+    <div class="app-header__actions"></div>
+  </header>
+
+  <main class="container section">
+    <div class="empty-state">
+      <div class="empty-state__icon">🔮</div>
+      <h3 class="empty-state__title">Em breve</h3>
+      <p class="empty-state__description">Esta secção está reservada para futuras funcionalidades.</p>
+    </div>
+  </main>
+
+  <nav class="tab-bar">
+    <a href="./stock.html" class="tab-bar__item">
+      <span class="tab-bar__icon">📦</span>
+      <span>Stock</span>
+    </a>
+    <a href="./site.html" class="tab-bar__item">
+      <span class="tab-bar__icon">🌐</span>
+      <span>Site</span>
+    </a>
+    <a href="./visao.html" class="tab-bar__item">
+      <span class="tab-bar__icon">📊</span>
+      <span>Visão</span>
+    </a>
+    <a href="./extra.html" class="tab-bar__item active">
+      <span class="tab-bar__icon">🔮</span>
+      <span>Extra</span>
+    </a>
+    <a href="./settings.html" class="tab-bar__item">
+      <span class="tab-bar__icon">⚙️</span>
+      <span>Config</span>
+    </a>
+  </nav>
+
+  <script>
+    const savedTheme = localStorage.getItem('dripdrop-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>
